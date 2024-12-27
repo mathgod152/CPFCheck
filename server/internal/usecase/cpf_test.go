@@ -1,13 +1,15 @@
 package usecase_test
 
 import (
+	"fmt"
+	"math/rand"
 	"testing"
 
 	fuzz "github.com/google/gofuzz"
 	"github.com/stretchr/testify/assert"
 )
 
-func TestCheck(t *testing.T) (bool, error){
+func TestCheck(t *testing.T){
 	f := fuzz.New()
 	newTrueCPF := generateTrueCPF(f)
 
@@ -23,3 +25,54 @@ func TestCheck(t *testing.T) (bool, error){
 	assert.NotEqual(t, cpfCheck, true)
 }
 
+func generateTrueCPF(f *fuzz.Fuzzer) ([]int, error) {
+	firstNine := generateFirstNineNumbers()
+	cpf := append(firstNine, generateCPFFirstVerifierDigit(firstNine))
+	cpf = append(cpf, generateCPFSecondVerifierDigit(cpf))
+}
+
+func generateFirstNineNumbers() ([]int) {
+	var cpfFirstNine []int
+	for len(cpfFirstNine) < 9 {
+		newNumber := rand.Intn(9)
+		cpfFirstNine = append(cpfFirstNine, newNumber)
+		fmt.Println("Novo Array: ", cpfFirstNine)
+	}
+	if allElementsEqual(cpfFirstNine){
+		cpfFirstNine = generateFirstNineNumbers()
+	}
+	return cpfFirstNine
+}
+
+func generateCPFFirstVerifierDigit(fd []int) int {
+	var verifyDigit int
+	for i, num := range fd {
+		verifyDigit = verifyDigit + (num * (10 - i))
+	}
+	verifyDigit =  (verifyDigit * 10) % 11
+	return verifyDigit
+}
+
+func generateCPFSecondVerifierDigit(fd []int) int {
+	var verifyDigit int
+	for i, num := range fd {
+		verifyDigit = verifyDigit + (num * (11 - i))
+	}
+	verifyDigit =  (verifyDigit * 10) % 11
+	return verifyDigit
+}
+
+
+func allElementsEqual[T comparable](arr []T) bool {
+	if len(arr) == 0 {
+		return true // Considera vazio como "todos iguais"
+	}
+
+	first := arr[0]
+	for _, v := range arr {
+		if v != first {
+			return false
+		}
+	}
+	return true
+}
