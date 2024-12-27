@@ -25,11 +25,21 @@ func TestCheck(t *testing.T){
 	assert.NotEqual(t, cpfCheck, true)
 }
 
-func generateTrueCPF(f *fuzz.Fuzzer) ([]int, error) {
+func generateTrueCPF(f *fuzz.Fuzzer) ([]int) {
 	firstNine := generateFirstNineNumbers()
 	cpf := append(firstNine, generateCPFFirstVerifierDigit(firstNine))
 	cpf = append(cpf, generateCPFSecondVerifierDigit(cpf))
+
+	return cpf
 }
+func generateFakeCPF(f *fuzz.Fuzzer) ([]int) {
+	firstNine := generateFirstNineNumbers()
+	cpf := append(firstNine, generateCPFFakeFirstVerifierDigit(firstNine))
+	cpf = append(cpf, generateCPFFakeSecondVerifierDigit(cpf))
+
+	return cpf
+}
+
 
 func generateFirstNineNumbers() ([]int) {
 	var cpfFirstNine []int
@@ -60,6 +70,24 @@ func generateCPFSecondVerifierDigit(fd []int) int {
 	}
 	verifyDigit =  (verifyDigit * 10) % 11
 	return verifyDigit
+}
+
+func generateCPFFakeFirstVerifierDigit(fd []int) int {
+	var verifyDigit int
+	for i, num := range fd {
+		verifyDigit = verifyDigit + (num * (10 - i))
+	}
+	verifyDigit =  (verifyDigit * 10) % 11
+	return verifyDigit + 1
+}
+
+func generateCPFFakeSecondVerifierDigit(fd []int) int {
+	var verifyDigit int
+	for i, num := range fd {
+		verifyDigit = verifyDigit + (num * (11 - i))
+	}
+	verifyDigit =  (verifyDigit * 10) % 11
+	return verifyDigit + 1
 }
 
 
