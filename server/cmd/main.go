@@ -39,4 +39,5 @@ func main() {
 	cpf = append(cpf, generateCpfSecondVerifierDigit(cpf))
 
 	fmt.Println("Cpf: ", cpf)
+	fmt.Println("Cpf Sem os digitos: ", cpf[:9])
 }
