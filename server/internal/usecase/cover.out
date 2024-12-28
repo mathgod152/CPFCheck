@@ -1,5 +1,0 @@
-mode: set
-github.com/mathgod152/CFPcheck/internal/usecase/cpf_validate.go:13.88,15.15 2 1
-github.com/mathgod152/CFPcheck/internal/usecase/cpf_validate.go:15.15,17.3 1 0
-github.com/mathgod152/CFPcheck/internal/usecase/cpf_validate.go:18.2,18.20 1 1
-github.com/mathgod152/CFPcheck/internal/usecase/cpf_validate.go:21.65,25.2 2 0

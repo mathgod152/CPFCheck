@@ -30,7 +30,6 @@ func TestCpfValidate(t *testing.T) {
 
 	for i := 0; i < 1000; i++ {
 		cpfCheck := cpfUseCase.CpfValidate(newFakeCpf)
-
 		assert.NotEqual(t, cpfCheck, true)
 	}
 }
@@ -71,14 +70,12 @@ func generateTrueCpf(f *fuzz.Fuzzer) []int {
 	firstNine := generateFirstNineNumbers(f)
 	cpf := append(firstNine, generateCpfFirstVerifierDigit(firstNine))
 	cpf = append(cpf, generateCpfSecondVerifierDigit(cpf))
-	fmt.Println("Cpf True: ", cpf)
 	return cpf
 }
 func generateFakeCpf(f *fuzz.Fuzzer) []int {
 	firstNine := generateFirstNineNumbers(f)
 	cpf := append(firstNine, generateCpfFakeFirstVerifierDigit(firstNine))
 	cpf = append(cpf, generateCpfFakeSecondVerifierDigit(cpf))
-	fmt.Println("Cpf Fake: ", cpf)
 	return cpf
 }
 
@@ -99,7 +96,6 @@ func generateFirstNineNumbers(f *fuzz.Fuzzer) []int {
 func generateCpfFirstVerifierDigit(fd []int) int {
 	var verifyDigit int
 	for i, num := range fd {
-		fmt.Println("I: ", i, "Num: ", num)
 		verifyDigit += num * (10 - i)
 	}
 	verifyDigit = (verifyDigit * 10) % 11
@@ -112,7 +108,6 @@ func generateCpfFirstVerifierDigit(fd []int) int {
 func generateCpfSecondVerifierDigit(fd []int) int {
 	var verifyDigit int
 	for i, num := range fd {
-		fmt.Println("I: ", i, "Num: ", num)
 		verifyDigit += num * (11 - i)
 	}
 	verifyDigit = (verifyDigit * 10) % 11
@@ -124,7 +119,6 @@ func generateCpfSecondVerifierDigit(fd []int) int {
 func generateCpfFakeFirstVerifierDigit(fd []int) int {
 	var verifyDigit int
 	for i, num := range fd {
-		fmt.Println("I: ", i, "Num: ", num)
 		verifyDigit = verifyDigit + (num * (10 - i))
 	}
 	verifyDigit = (verifyDigit * 10) % 11
@@ -137,7 +131,6 @@ func generateCpfFakeFirstVerifierDigit(fd []int) int {
 func generateCpfFakeSecondVerifierDigit(fd []int) int {
 	var verifyDigit int
 	for i, num := range fd {
-		fmt.Println("I: ", i, "Num: ", num)
 		verifyDigit = verifyDigit + (num * (11 - i))
 	}
 	verifyDigit = (verifyDigit * 10) % 11

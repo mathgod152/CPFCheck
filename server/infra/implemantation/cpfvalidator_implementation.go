@@ -2,7 +2,6 @@ package implemantation
 
 import (
 	"errors"
-	"fmt"
 	"regexp"
 	"strconv"
 
@@ -46,7 +45,6 @@ func (c *CpfValidatorImplementation) Verify(cpfNumber []int) (bool) {
 	if !verifySecondDigit(cpfNumber){
 		return false
 	}
-    fmt.Println("CPF válido!")
     return true
 }
 
@@ -63,7 +61,6 @@ func verifyFirstDigit(cpfNumber []int)(bool){
     }
 
     if firstVerifierDigit != sumFirstVerifierDigit {
-        fmt.Printf("Erro no primeiro dígito: esperado %v, calculado %v\n", firstVerifierDigit, sumFirstVerifierDigit)
         return false
     }
 	return true
@@ -82,7 +79,6 @@ func verifySecondDigit(cpfNumber []int)(bool){
     }
 
     if secondVerifierDigit != sumSecondVerifierDigit {
-        fmt.Printf("Erro no segundo dígito: esperado %v, calculado %v\n", secondVerifierDigit, sumSecondVerifierDigit)
         return false
     }
 	return true
