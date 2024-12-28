@@ -15,7 +15,7 @@ var (
 	CpfValidateImplementation *implemantation.CpfValidatorImplementation
 )
 
-func CpfValidate(t *testing.T) {
+func TestCpfValidate(t *testing.T) {
 	f := fuzz.New()
 	cpfUseCase := &usecase.CpfValidatorUseCase{
 		CpfValidatorEntity: CpfValidateImplementation, // Injetando a implementação 
@@ -162,7 +162,7 @@ func convertIntArrayToString(cpf []int) string {
 
 func allElementsEqual[T comparable](arr []T) bool {
 	if len(arr) == 0 {
-		return true // Considera vazio como "todos iguais"
+		return true 
 	}
 
 	first := arr[0]
