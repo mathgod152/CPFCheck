@@ -9,8 +9,16 @@ type CpfValidatorUseCase struct {
 	CpfValidatorEntity entity.CpfValidatorInterface
 }
 
+func (c *CpfValidatorUseCase) ConvertToValidateFormat(cpfNumber []int) (bool) {
+	verify := c.CpfValidatorEntity.Verify(cpfNumber)
+ 
+	 return verify;
+ }
+
 func (c *CpfValidatorUseCase) CpfValidate(cpfNumber []int) (bool) {
-   varify := c.CpfValidatorEntity.Verify(cpfNumber)
+   verify := c.CpfValidatorEntity.Verify(cpfNumber)
+
+	return verify;
 }
 
 

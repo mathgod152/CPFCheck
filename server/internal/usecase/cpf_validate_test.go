@@ -6,14 +6,19 @@ import (
 	"testing"
 
 	fuzz "github.com/google/gofuzz"
+	"github.com/mathgod152/CFPcheck/infra/implemantation"
 	"github.com/mathgod152/CFPcheck/internal/usecase"
 	"github.com/stretchr/testify/assert"
 )
 
+var (
+	CpfValidateImplementation *implemantation.CpfValidatorImplementation
+)
+
 func TestCheck(t *testing.T) {
 	f := fuzz.New()
-	cpfUseCase := &usecase.CpfUseCase{
-		CpfUseCase: nil, // ou configure uma implementação válida para o `CpfInterface`
+	cpfUseCase := &usecase.CpfValidatorUseCase{
+		CpfValidatorEntity: CpfValidateImplementation, // Injetando a implementação 
 	}
 	for i := 0; i < 1000; i++ {
 		newTrueCpf := generateTrueCpf(f)
