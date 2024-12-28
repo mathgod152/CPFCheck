@@ -3,12 +3,11 @@ package main
 import (
 	"fmt"
 	"math/rand"
-	"strings"
 )
 
-func generateFirstNineNumbers()([]int){
+func generateFirstNineNumbers() []int {
 	var cpfFirstNine []int
-	for len(cpfFirstNine) < 9 {	
+	for len(cpfFirstNine) < 9 {
 		newNumber := rand.Intn(9)
 		cpfFirstNine = append(cpfFirstNine, newNumber)
 		fmt.Println("Novo Array: ", cpfFirstNine)
@@ -16,28 +15,28 @@ func generateFirstNineNumbers()([]int){
 	return cpfFirstNine
 }
 
-func generateCPFFirstVerifierDigit(fd []int) int {
+func generateCpfFirstVerifierDigit(fd []int) int {
 	var verifyDigit int
 	for i, num := range fd {
 		verifyDigit = verifyDigit + (num * (10 - i))
 	}
-	verifyDigit =  (verifyDigit * 10) % 11
+	verifyDigit = (verifyDigit * 10) % 11
 	return verifyDigit
 }
 
-func generateCPFSecondVerifierDigit(fd []int) int {
+func generateCpfSecondVerifierDigit(fd []int) int {
 	var verifyDigit int
 	for i, num := range fd {
 		verifyDigit = verifyDigit + (num * (11 - i))
 	}
-	verifyDigit =  (verifyDigit * 10) % 11
+	verifyDigit = (verifyDigit * 10) % 11
 	return verifyDigit
 }
 
-func main(){
+func main() {
 	firstNine := generateFirstNineNumbers()
-	cpf := append(firstNine, generateCPFFirstVerifierDigit(firstNine))
-	cpf = append(cpf, generateCPFSecondVerifierDigit(cpf))
+	cpf := append(firstNine, generateCpfFirstVerifierDigit(firstNine))
+	cpf = append(cpf, generateCpfSecondVerifierDigit(cpf))
 
-	fmt.Println("CPF: ", cpf)
+	fmt.Println("Cpf: ", cpf)
 }

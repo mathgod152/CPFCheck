@@ -5,91 +5,89 @@ import (
 	"math/rand"
 	"testing"
 
-	fuzz "github.com/google/gofuzz"
+	//fuzz "github.com/google/gofuzz"
 	"github.com/stretchr/testify/assert"
 )
 
-func TestCheck(t *testing.T){
-	f := fuzz.New()
-	newTrueCPF := generateTrueCPF(f)
+func TestCheck(t *testing.T) {
+	//f := fuzz.New()
+	newTrueCpf := generateTrueCpf()
 
-	cpfCheck, err := CPFCheckUseCaseMock.UsecaseCPF.Check(*&newTrueCPF)
+	cpfCheck, err := CpfCheckUseCaseMock.UsecaseCpf.Check(*&newTrueCpf)
 
 	assert.Nil(t, err)
 	assert.Equal(t, cpfCheck, true)
 
-	newFakeCPF := generateFakeCPF(f)
+	newFakeCpf := generateFakeCpf()
 
-	cpfCheck, err = CPFCheckUseCaseMock.UsecaseCPF.Check(*&newFakeCPF)
+	cpfCheck, err = CpfCheckUseCaseMock.UsecaseCpf.Check(*&newFakeCpf)
 	assert.Nil(t, err)
 	assert.NotEqual(t, cpfCheck, true)
 }
 
-func generateTrueCPF(f *fuzz.Fuzzer) ([]int) {
+func generateTrueCpf() []int {
 	firstNine := generateFirstNineNumbers()
-	cpf := append(firstNine, generateCPFFirstVerifierDigit(firstNine))
-	cpf = append(cpf, generateCPFSecondVerifierDigit(cpf))
-
+	cpf := append(firstNine, generateCpfFirstVerifierDigit(firstNine))
+	cpf = append(cpf, generateCpfSecondVerifierDigit(cpf))
+	fmt.Println("Cpf True: ", cpf)
 	return cpf
 }
-func generateFakeCPF(f *fuzz.Fuzzer) ([]int) {
+func generateFakeCpf() []int {
 	firstNine := generateFirstNineNumbers()
-	cpf := append(firstNine, generateCPFFakeFirstVerifierDigit(firstNine))
-	cpf = append(cpf, generateCPFFakeSecondVerifierDigit(cpf))
-
+	cpf := append(firstNine, generateCpfFakeFirstVerifierDigit(firstNine))
+	cpf = append(cpf, generateCpfFakeSecondVerifierDigit(cpf))
+	fmt.Println("Cpf Fake: ", cpf)
 	return cpf
 }
 
-
-func generateFirstNineNumbers() ([]int) {
+func generateFirstNineNumbers() []int {
 	var cpfFirstNine []int
 	for len(cpfFirstNine) < 9 {
 		newNumber := rand.Intn(9)
 		cpfFirstNine = append(cpfFirstNine, newNumber)
 		fmt.Println("Novo Array: ", cpfFirstNine)
 	}
-	if allElementsEqual(cpfFirstNine){
+	if allElementsEqual(cpfFirstNine) {
 		cpfFirstNine = generateFirstNineNumbers()
 	}
 	return cpfFirstNine
 }
 
-func generateCPFFirstVerifierDigit(fd []int) int {
+func generateCpfFirstVerifierDigit(fd []int) int {
 	var verifyDigit int
 	for i, num := range fd {
 		verifyDigit = verifyDigit + (num * (10 - i))
 	}
-	verifyDigit =  (verifyDigit * 10) % 11
+	verifyDigit = (verifyDigit * 10) % 11
 	return verifyDigit
 }
 
-func generateCPFSecondVerifierDigit(fd []int) int {
+func generateCpfSecondVerifierDigit(fd []int) int {
 	var verifyDigit int
 	for i, num := range fd {
 		verifyDigit = verifyDigit + (num * (11 - i))
 	}
-	verifyDigit =  (verifyDigit * 10) % 11
+	verifyDigit = (verifyDigit * 10) % 11
 	return verifyDigit
 }
 
-func generateCPFFakeFirstVerifierDigit(fd []int) int {
+func generateCpfFakeFirstVerifierDigit(fd []int) int {
 	var verifyDigit int
 	for i, num := range fd {
 		verifyDigit = verifyDigit + (num * (10 - i))
 	}
-	verifyDigit =  (verifyDigit * 10) % 11
+	verifyDigit = (verifyDigit * 10) % 11
 	return verifyDigit + 1
 }
 
-func generateCPFFakeSecondVerifierDigit(fd []int) int {
+func generateCpfFakeSecondVerifierDigit(fd []int) int {
 	var verifyDigit int
 	for i, num := range fd {
 		verifyDigit = verifyDigit + (num * (11 - i))
 	}
-	verifyDigit =  (verifyDigit * 10) % 11
+	verifyDigit = (verifyDigit * 10) % 11
 	return verifyDigit + 1
 }
-
 
 func allElementsEqual[T comparable](arr []T) bool {
 	if len(arr) == 0 {
