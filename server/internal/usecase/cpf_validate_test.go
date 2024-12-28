@@ -15,7 +15,7 @@ var (
 	CpfValidateImplementation *implemantation.CpfValidatorImplementation
 )
 
-func TestCheck(t *testing.T) {
+func CpfValidate(t *testing.T) {
 	f := fuzz.New()
 	cpfUseCase := &usecase.CpfValidatorUseCase{
 		CpfValidatorEntity: CpfValidateImplementation, // Injetando a implementação 
@@ -32,6 +32,38 @@ func TestCheck(t *testing.T) {
 		cpfCheck := cpfUseCase.CpfValidate(newFakeCpf)
 
 		assert.NotEqual(t, cpfCheck, true)
+	}
+}
+
+func TestConvertToValidateFormatWithFuzzer(t *testing.T) {
+	cpfUseCase := &usecase.CpfValidatorUseCase{
+		CpfValidatorEntity: CpfValidateImplementation, // Injetando a implementação 
+	}
+
+	f := fuzz.New()
+
+	// Testar CPFs válidos
+	for i := 0; i < 1000; i++ {
+		trueCpf := generateTrueCpf(f)
+		cpfStr := convertIntArrayToString(trueCpf)
+
+		t.Run(fmt.Sprintf("Valid CPF #%d", i), func(t *testing.T) {
+			result, err := cpfUseCase.ConvertToValidateFormat(cpfStr)
+			assert.NoError(t, err)
+			assert.Equal(t, trueCpf, result)
+		})
+	}
+
+	// Testar CPFs inválidos
+	for i := 0; i < 1000; i++ {
+		fakeCpf := generateFakeCpf(f)
+		cpfStr := convertIntArrayToString(fakeCpf)
+
+		t.Run(fmt.Sprintf("Invalid CPF #%d", i), func(t *testing.T) {
+			result, err := cpfUseCase.ConvertToValidateFormat(cpfStr)
+			assert.NoError(t, err)
+			assert.Equal(t, fakeCpf, result)
+		})
 	}
 }
 
@@ -96,8 +128,8 @@ func generateCpfFakeFirstVerifierDigit(fd []int) int {
 		verifyDigit = verifyDigit + (num * (10 - i))
 	}
 	verifyDigit = (verifyDigit * 10) % 11
-	if verifyDigit > 9 {
-		return verifyDigit - 1
+	if verifyDigit >= 9 {
+		verifyDigit = 1
 	}
 	return verifyDigit + 1
 }
@@ -109,10 +141,23 @@ func generateCpfFakeSecondVerifierDigit(fd []int) int {
 		verifyDigit = verifyDigit + (num * (11 - i))
 	}
 	verifyDigit = (verifyDigit * 10) % 11
-	if verifyDigit > 9 {
-		return verifyDigit - 1
+	if verifyDigit >= 9 {
+		verifyDigit = 1
 	}
 	return verifyDigit + 1
+}
+
+func convertIntArrayToString(cpf []int) string {
+	cpfStr := ""
+	for i, num := range cpf {
+		cpfStr += fmt.Sprintf("%d", num)
+		if i == 2 || i == 5 {
+			cpfStr += "."
+		} else if i == 8 {
+			cpfStr += "-"
+		}
+	}
+	return cpfStr
 }
 
 func allElementsEqual[T comparable](arr []T) bool {

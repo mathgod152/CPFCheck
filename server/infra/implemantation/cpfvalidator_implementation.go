@@ -1,7 +1,10 @@
 package implemantation
 
 import (
+	"errors"
 	"fmt"
+	"regexp"
+	"strconv"
 
 	"github.com/mathgod152/CFPcheck/internal/entity"
 )
@@ -11,7 +14,22 @@ var _ entity.CpfValidatorInterface = (*CpfValidatorImplementation)(nil)
 type CpfValidatorImplementation struct{}
 
 func (c *CpfValidatorImplementation) ConverteToIntArray(cpf string) ([]int, error) {
-	return nil, nil
+	cpfDigits := regexp.MustCompile(`\D`).ReplaceAllString(cpf, "")
+
+	if len(cpfDigits) != 11 {
+		return nil, errors.New("o CPF deve conter exatamente 11 dígitos")
+	}
+
+	intArray := make([]int, len(cpfDigits))
+	for i, char := range cpfDigits {
+		num, err := strconv.Atoi(string(char))
+		if err != nil {
+			return nil, errors.New("erro ao converter CPF para inteiros")
+		}
+		intArray[i] = num
+	}
+
+	return intArray, nil
 }
 
 
