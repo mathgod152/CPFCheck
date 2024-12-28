@@ -17,16 +17,15 @@ func TestCheck(t *testing.T) {
 	}
 	for i := 0; i < 1000; i++ {
 		newTrueCpf := generateTrueCpf(f)
-		cpfCheck, err := cpfUseCase.CpfValidate(newTrueCpf)
+		cpfCheck := cpfUseCase.CpfValidate(newTrueCpf)
 
-		assert.Nil(t, err)
 		assert.Equal(t, cpfCheck, true)
 	}
 	newFakeCpf := generateFakeCpf(f)
 
 	for i := 0; i < 1000; i++ {
-		cpfCheck, err := cpfUseCase.CpfValidate(newFakeCpf)
-		assert.Nil(t, err)
+		cpfCheck := cpfUseCase.CpfValidate(newFakeCpf)
+
 		assert.NotEqual(t, cpfCheck, true)
 	}
 }

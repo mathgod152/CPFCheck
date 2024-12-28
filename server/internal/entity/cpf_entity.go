@@ -7,11 +7,14 @@ type CpfEntity struct {
 	CpfNumber []int
 }
 
+type CpfValidatorInterface interface {
+	ConverteToIntArray(cpf string) ([]int, error)
+	Verify(cpfNumber []int) (bool)
+}
+
 type CpfInterface interface {
-	Verify(cpfNumber []int) (bool, error)
 	Create(cpfData CpfEntity) (CpfEntity, error)
 	Read()([]CpfEntity)
 	ReadByCpf(cpf []int)([]CpfEntity)
 	Updae(cpfData CpfEntity) (CpfEntity, error)
 }
-

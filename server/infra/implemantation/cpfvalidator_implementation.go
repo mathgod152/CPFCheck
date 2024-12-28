@@ -1,4 +1,4 @@
-package usecase
+package implemantation
 
 import (
 	"fmt"
@@ -6,16 +6,20 @@ import (
 	"github.com/mathgod152/CFPcheck/internal/entity"
 )
 
-type CpfUseCase struct {
-	CpfUseCase entity.CpfInterface
+var _ entity.CpfValidatorInterface = (*CpfValidatorImplementation)(nil)
+
+type CpfValidatorImplementation struct{}
+
+func (c *CpfValidatorImplementation) ConverteToIntArray(cpf string) ([]int, error) {
+	return nil, nil
 }
 
-func (c *CpfUseCase) CpfValidate(cpfNumber []int) (bool, error) {
-    if len(cpfNumber) != 11 {
-        return false, fmt.Errorf("CPF must contain exactly 11 digits")
+func (c *CpfValidatorImplementation) Verify(cpfNumber []int) (bool) {
+	if len(cpfNumber) != 11 {
+        return false
     }
 	if allElementsEqual(cpfNumber){
-		return false, fmt.Errorf("CPF cannot have all numbers the same.")
+		return false
 	}
 
     firstVerifierDigit := cpfNumber[9]
@@ -35,7 +39,7 @@ func (c *CpfUseCase) CpfValidate(cpfNumber []int) (bool, error) {
 
     if firstVerifierDigit != sumFirstVerifierDigit {
         fmt.Printf("Erro no primeiro dígito: esperado %v, calculado %v\n", firstVerifierDigit, sumFirstVerifierDigit)
-        return false, nil
+        return false
     }
 	
     firstTen := cpfNumber[:10]
@@ -50,11 +54,11 @@ func (c *CpfUseCase) CpfValidate(cpfNumber []int) (bool, error) {
 
     if secondVerifierDigit != sumSecondVerifierDigit {
         fmt.Printf("Erro no segundo dígito: esperado %v, calculado %v\n", secondVerifierDigit, sumSecondVerifierDigit)
-        return false, nil
+        return false
     }
 
     fmt.Println("CPF válido!")
-    return true, nil
+    return true
 }
 
 func allElementsEqual[T comparable](arr []T) bool {
