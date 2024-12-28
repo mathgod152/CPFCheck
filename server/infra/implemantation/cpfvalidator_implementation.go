@@ -14,6 +14,7 @@ func (c *CpfValidatorImplementation) ConverteToIntArray(cpf string) ([]int, erro
 	return nil, nil
 }
 
+
 func (c *CpfValidatorImplementation) Verify(cpfNumber []int) (bool) {
 	if len(cpfNumber) != 11 {
         return false
@@ -21,14 +22,20 @@ func (c *CpfValidatorImplementation) Verify(cpfNumber []int) (bool) {
 	if allElementsEqual(cpfNumber){
 		return false
 	}
+	if !verifyFirstDigit(cpfNumber){
+		return false
+	}
+	if !verifySecondDigit(cpfNumber){
+		return false
+	}
+    fmt.Println("CPF válido!")
+    return true
+}
 
-    firstVerifierDigit := cpfNumber[9]
-    secondVerifierDigit := cpfNumber[10]
-    firstNine := cpfNumber[:9]
-	fmt.Printf("CPF recebido: %v\n", cpfNumber)
-    fmt.Printf("Primeiros 9 dígitos: %v\n", firstNine)
-    // Cálculo do primeiro dígito verificador
-    var sumFirstVerifierDigit int
+func verifyFirstDigit(cpfNumber []int)(bool){
+	firstNine := cpfNumber[:9]
+	firstVerifierDigit := cpfNumber[9]
+	var sumFirstVerifierDigit int
     for i, num := range firstNine {
         sumFirstVerifierDigit += num * (10 - i)
     }
@@ -41,7 +48,11 @@ func (c *CpfValidatorImplementation) Verify(cpfNumber []int) (bool) {
         fmt.Printf("Erro no primeiro dígito: esperado %v, calculado %v\n", firstVerifierDigit, sumFirstVerifierDigit)
         return false
     }
-	
+	return true
+}
+
+func verifySecondDigit(cpfNumber []int)(bool){
+	secondVerifierDigit := cpfNumber[10]
     firstTen := cpfNumber[:10]
     var sumSecondVerifierDigit int
     for i, num := range firstTen {
@@ -56,9 +67,7 @@ func (c *CpfValidatorImplementation) Verify(cpfNumber []int) (bool) {
         fmt.Printf("Erro no segundo dígito: esperado %v, calculado %v\n", secondVerifierDigit, sumSecondVerifierDigit)
         return false
     }
-
-    fmt.Println("CPF válido!")
-    return true
+	return true
 }
 
 func allElementsEqual[T comparable](arr []T) bool {
