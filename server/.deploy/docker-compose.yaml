@@ -1,0 +1,10 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    volumes:
+      - ./sql/migrations/000001_init.up.sql:/docker-entrypoint-initdb.d/000001_init.up.sql
+      - ./sql/migrations/000001_init.down.sql:/docker-entrypoint-initdb.d/000001_init.down.sql
+    environment:
+      POSTGRES_PASSWORD: "root"
+    ports:
+      - "5430:5432"

@@ -1,0 +1,24 @@
+DROP TABLE IF EXISTS cnpj;
+DROP TABLE IF EXISTS cpf;
+DROP DATABASE IF EXISTS validate;
+
+
+CREATE DATABASE validate;
+
+\c validate;
+
+CREATE TABLE cpf (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255),
+    cpf_number VARCHAR(255),
+    created TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE cnpj (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255),
+    cnpj_number VARCHAR(255),
+    created TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
