@@ -1,9 +1,12 @@
 package main
 
 import (
+	"database/sql"
 	"os"
 	"os/signal"
 
+	"github.com/mathgod152/CFPcheck/cmd/dbinit"
+	"github.com/mathgod152/CFPcheck/infra/database"
 	"github.com/mathgod152/CFPcheck/infra/implemantation"
 	web "github.com/mathgod152/CFPcheck/infra/webserver"
 	"github.com/mathgod152/CFPcheck/internal/entity"
@@ -12,19 +15,26 @@ import (
 
 var (
 	serverImpl entity.Server
+	DB *sql.DB
+	err error
 )
 
 func init(){
 
 	var(
 		CpfValidateImplementation = &implemantation.CpfValidatorImplementation{}
+		CpfImplementation = &database.CpfRepository{Db: dbinit.DB}
 		runCpfValidator = &usecase.CpfValidatorUseCase{
 			CpfValidatorEntity: CpfValidateImplementation, // Injetando a implementação 
+		}
+		runCpf = &usecase.CpfUsecase{
+			CpfInterface: CpfImplementation,
 		}
 	)
 
 	serverImpl = &web.Server{
 		CpfValidator: runCpfValidator,
+		Cpf: runCpf,
 	}
 }
 

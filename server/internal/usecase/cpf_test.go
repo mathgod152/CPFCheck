@@ -17,14 +17,14 @@ var (
 )
 
 func TestNewCpf(t *testing.T) (){
-	cpfUseCase := &usecase.CpfUseCase{
+	cpfUseCase := &usecase.CpfUsecase{
 		CpfInterface: CpfImplementation,
 	}
 	f := fuzz.New()
 
 	newCpf := generateCpf(f)
 
-	createCpfResponse, err := cpfUseCase.NewCpf(newCpf)
+	createCpfResponse, err := cpfUseCase.NewCpf(*newCpf)
 	if len(newCpf.CpfNumber) > 11 || len(newCpf.CpfNumber) < 11 {
 		expectedError := errors.New("CPF Invalido")
 		assert.Equal(t, expectedError, err)
@@ -42,11 +42,11 @@ func TestNewCpf(t *testing.T) (){
 
 func TestSelectCpfs(t *testing.T) {
 	cpfUseCase := &usecase.CpfUsecase{
-		CpfEntity: CpfImplementation,
+		CpfInterface: CpfImplementation,
 	}
 	f := fuzz.New()
 	newCpf := generateCpf(f)
-	_, err := cpfUseCase.NewCpf(newCpf) //Garante que um CPF vai existir
+	_, err := cpfUseCase.NewCpf(*newCpf) //Garante que um CPF vai existir
 
 	cpfs, err := cpfUseCase.SelectCpfs()
 
@@ -57,14 +57,14 @@ func TestSelectCpfs(t *testing.T) {
 
 func TestSelectCpfById(t *testing.T) {
 	cpfUseCase := &usecase.CpfUsecase{
-		CpfEntity: CpfImplementation,
+		CpfInterface: CpfImplementation,
 	}
 
 	f := fuzz.New()
 	newCpf := generateCpf(f)
-	newCpf, err := cpfUseCase.NewCpf(newCpf) //Garante que um CPF vai existir
+	_, err := cpfUseCase.NewCpf(*newCpf) //Garante que um CPF vai existir
 
-	testId := newCpf.Id
+	testId := newCpf.CpfNumber
 	cpf, err := cpfUseCase.SelectById(testId)
 
 	if err != nil {
@@ -78,17 +78,17 @@ func TestSelectCpfById(t *testing.T) {
 
 func TestUpdateCpf(t *testing.T) {
 	cpfUseCase := &usecase.CpfUsecase{
-		CpfEntity: CpfImplementation,
+		CpfInterface: CpfImplementation,
 	}
 
 	f := fuzz.New()
 	newCpf := generateCpf(f)
-	newCpf, err := cpfUseCase.NewCpf(newCpf) //Garante que um CPF vai existir
+	_, err := cpfUseCase.NewCpf(*newCpf) //Garante que um CPF vai existir
 
 	updatedCpf := updateCpf(f)
-	updatedCpf.Id = newCpf.Id 
+	cpfToUpdate := newCpf.CpfNumber 
 
-	updateResponse, err := cpfUseCase.Update(updatedCpf)
+	updateResponse, err := cpfUseCase.UpdateCpf(*updatedCpf, cpfToUpdate)
 
 	if err != nil {
 		assert.Equal(t, errors.New("CPF not found"), err)
@@ -104,19 +104,20 @@ func TestUpdateCpf(t *testing.T) {
 
 func TestDeleteCpf(t *testing.T) {
 	cpfUseCase := &usecase.CpfUsecase{
-		CpfEntity: CpfImplementation,
+		CpfInterface: CpfImplementation,
 	}
 
 	f := fuzz.New()
 	newCpf := generateCpf(f)
-	newCpf, err := cpfUseCase.NewCpf(newCpf) //Garante que um CPF vai existir
+	_, err := cpfUseCase.NewCpf(*newCpf) //Garante que um CPF vai existir
 
-	testId := newCpf.Id  
-	err = cpfUseCase.Delete(testId)
+	testId := newCpf.CpfNumber  
+	response, err := cpfUseCase.DeleteCpf(testId)
 
 	if err != nil {
 		assert.Equal(t, errors.New("CPF not found"), err)
 	} else {
+		assert.Equal(t, response, true)
 		assert.NoError(t, err)
 	}
 }

@@ -11,11 +11,13 @@ var _ entity.Server = (*Server)(nil)
 
 type Server struct {
 	CpfValidator *usecase.CpfValidatorUseCase
+	Cpf *usecase.CpfUsecase
 }
 
 func (s *Server) Start(port string) error {
 	apiRouter := &handlers.Router{
 		CpfValidator:   s.CpfValidator,
+		Cpf: s.Cpf,
 	}
 
 	app := fiber.New()
@@ -23,6 +25,7 @@ func (s *Server) Start(port string) error {
 		Group("/api/v1")
 
 	router.Post("/cpfValidator", apiRouter.ValidateCpfHandler)
+	router.Post("/savecpf", apiRouter.CreateCpfHandler)
 
 	return app.Listen(port)
 }

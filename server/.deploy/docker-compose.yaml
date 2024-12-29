@@ -5,6 +5,7 @@ services:
       - ./sql/migrations/000001_init.up.sql:/docker-entrypoint-initdb.d/000001_init.up.sql
       - ./sql/migrations/000001_init.down.sql:/docker-entrypoint-initdb.d/000001_init.down.sql
     environment:
-      POSTGRES_PASSWORD: "root"
+      POSTGRES_USER: "root" # Usuário do banco
+      POSTGRES_PASSWORD: "root" # Senha do usuário
     ports:
       - "5430:5432"

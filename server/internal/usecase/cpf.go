@@ -7,11 +7,11 @@ import (
 	"github.com/mathgod152/CFPcheck/internal/entity"
 )
 
-type CpfUseCase struct {
+type CpfUsecase struct {
 	CpfInterface entity.CpfInterface
 }
 
-func (c *CpfUseCase) NewCpf(input dto.CpfDTO) (dto.CpfDTO, error) {
+func (c *CpfUsecase) NewCpf(input dto.CpfDTO) (dto.CpfDTO, error) {
 	cpf := entity.CpfEntity{
 		Name:      input.Name,
 		City:      input.City,
@@ -29,7 +29,7 @@ func (c *CpfUseCase) NewCpf(input dto.CpfDTO) (dto.CpfDTO, error) {
 	}, nil
 }
 
-func (c *CpfUseCase) SelectCpfs() ([]dto.CpfDTO, error) {
+func (c *CpfUsecase) SelectCpfs() ([]dto.CpfDTO, error) {
 	entities, err := c.CpfInterface.GetCpfs()
 	if err != nil {
 		return nil, errors.New("Erro ao Receber os Dados")
@@ -49,7 +49,7 @@ func (c *CpfUseCase) SelectCpfs() ([]dto.CpfDTO, error) {
 	return dtos, nil
 }
 
-func (c *CpfUseCase) SelectById(cpf []int) (dto.CpfDTO, error) {
+func (c *CpfUsecase) SelectById(cpf []int) (dto.CpfDTO, error) {
 	entity, err := c.CpfInterface.GetCpf(cpf)
 	if err != nil {
 		return dto.CpfDTO{}, errors.New("Erro ao Receber os Dados")
@@ -62,14 +62,14 @@ func (c *CpfUseCase) SelectById(cpf []int) (dto.CpfDTO, error) {
 	}, nil
 }
 
-func (c *CpfUseCase) UpdateCpf(input dto.CpfDTO) (dto.CpfDTO, error) {
+func (c *CpfUsecase) UpdateCpf(input dto.CpfDTO, cpfNumber []int) (dto.CpfDTO, error) {
 	cpf := entity.CpfEntity{
 		Name:      input.Name,
 		City:      input.City,
 		State:     input.State,
 		CpfNumber: input.CpfNumber,
 	}
-	updatedEntity, err := c.CpfInterface.Update(&cpf)
+	updatedEntity, err := c.CpfInterface.Update(&cpf, cpfNumber)
 	if err != nil {
 		return dto.CpfDTO{}, err
 	}
@@ -81,7 +81,7 @@ func (c *CpfUseCase) UpdateCpf(input dto.CpfDTO) (dto.CpfDTO, error) {
 	}, nil
 }
 
-func (c *CpfUseCase) DeleteCpf(cpf []int) (bool, error) {
+func (c *CpfUsecase) DeleteCpf(cpf []int) (bool, error) {
 	deletedEntity, err := c.CpfInterface.Delete(cpf)
 	if err != nil {
 		return deletedEntity, err

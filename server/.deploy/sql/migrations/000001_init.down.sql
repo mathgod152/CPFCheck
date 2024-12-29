@@ -8,10 +8,11 @@ CREATE DATABASE validate;
 \c validate;
 
 CREATE TABLE cpf (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(255),
-    cpf_number VARCHAR(255),
-    created TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    id INT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    city VARCHAR(255),
+    state VARCHAR(255),
+    cpf_number VARCHAR(11) NOT NULL
 );
 
 CREATE TABLE cnpj (

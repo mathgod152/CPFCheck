@@ -17,6 +17,6 @@ type CpfInterface interface {
 	Create(cpfData *CpfEntity) (CpfEntity, error)
 	GetCpfs() ([]CpfEntity, error)
 	GetCpf(cpf []int) (CpfEntity, error)
-	Update(cpfData *CpfEntity) (CpfEntity, error)
+	Update(cpfData *CpfEntity, cpf []int) (CpfEntity, error)
 	Delete(cpf []int) (bool, error)
 }
