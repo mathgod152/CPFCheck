@@ -6,13 +6,19 @@ import (
 	"testing"
 
 	fuzz "github.com/google/gofuzz"
+	"github.com/mathgod152/CFPcheck/infra/database"
 	"github.com/mathgod152/CFPcheck/internal/dto"
+	"github.com/mathgod152/CFPcheck/internal/usecase"
 	"github.com/stretchr/testify/assert"
 )
 
+var (
+	CpfImplementation *database.CpfRepository
+)
+
 func TestNewCpf(t *testing.T) (){
-	cpfUseCase := &usecase.CpfUsecase{
-		CpfEntity: CpfImplementation,
+	cpfUseCase := &usecase.CpfUseCase{
+		CpfInterface: CpfImplementation,
 	}
 	f := fuzz.New()
 

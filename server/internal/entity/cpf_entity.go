@@ -14,8 +14,9 @@ type CpfValidatorInterface interface {
 }
 
 type CpfInterface interface {
-	Create(cpfData CpfEntity) (CpfEntity, error)
-	Read() []CpfEntity
-	ReadByCpf(cpf []int) []CpfEntity
-	Updae(cpfData CpfEntity) (CpfEntity, error)
+	Create(cpfData *CpfEntity) (CpfEntity, error)
+	GetCpfs() ([]CpfEntity, error)
+	GetCpf(cpf []int) (CpfEntity, error)
+	Update(cpfData *CpfEntity) (CpfEntity, error)
+	Delete(cpf []int) (bool, error)
 }
