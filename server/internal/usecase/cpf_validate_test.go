@@ -17,25 +17,25 @@ var (
 
 func TestCpfValidate(t *testing.T) {
 	f := fuzz.New()
-	cpfUseCase := &usecase.CpfValidatorUseCase{
+	cpfValidateUseCase := &usecase.CpfValidatorUseCase{
 		CpfValidatorEntity: CpfValidateImplementation, // Injetando a implementação 
 	}
 	for i := 0; i < 1000; i++ {
 		newTrueCpf := generateTrueCpf(f)
-		cpfCheck := cpfUseCase.CpfValidate(newTrueCpf)
+		cpfCheck := cpfValidateUseCase.CpfValidate(newTrueCpf)
 
 		assert.Equal(t, cpfCheck, true)
 	}
 	newFakeCpf := generateFakeCpf(f)
 
 	for i := 0; i < 1000; i++ {
-		cpfCheck := cpfUseCase.CpfValidate(newFakeCpf)
+		cpfCheck := cpfValidateUseCase.CpfValidate(newFakeCpf)
 		assert.NotEqual(t, cpfCheck, true)
 	}
 }
 
 func TestConvertToValidateFormatWithFuzzer(t *testing.T) {
-	cpfUseCase := &usecase.CpfValidatorUseCase{
+	cpfValidateUseCase := &usecase.CpfValidatorUseCase{
 		CpfValidatorEntity: CpfValidateImplementation, // Injetando a implementação 
 	}
 
@@ -47,7 +47,7 @@ func TestConvertToValidateFormatWithFuzzer(t *testing.T) {
 		cpfStr := convertIntArrayToString(trueCpf)
 
 		t.Run(fmt.Sprintf("Valid CPF #%d", i), func(t *testing.T) {
-			result, err := cpfUseCase.ConvertToValidateFormat(cpfStr)
+			result, err := cpfValidateUseCase.ConvertToValidateFormat(cpfStr)
 			assert.NoError(t, err)
 			assert.Equal(t, trueCpf, result)
 		})
@@ -59,7 +59,7 @@ func TestConvertToValidateFormatWithFuzzer(t *testing.T) {
 		cpfStr := convertIntArrayToString(fakeCpf)
 
 		t.Run(fmt.Sprintf("Invalid CPF #%d", i), func(t *testing.T) {
-			result, err := cpfUseCase.ConvertToValidateFormat(cpfStr)
+			result, err := cpfValidateUseCase.ConvertToValidateFormat(cpfStr)
 			assert.NoError(t, err)
 			assert.Equal(t, fakeCpf, result)
 		})
