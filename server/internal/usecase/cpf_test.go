@@ -2,7 +2,7 @@ package usecase_test
 
 import (
 	"errors"
-	"math"
+	"math/rand"
 	"testing"
 
 	fuzz "github.com/google/gofuzz"
@@ -26,7 +26,7 @@ func TestNewCpf(t *testing.T) (){
 	newCpf := generateCpf(f)
 
 	createCpfResponse, err := cpfUseCase.NewCpf(*newCpf)
-	if len(newCpf.CpfNumber) != 11 {
+	if len(newCpf.CpfNumber) != 11 && len(newCpf.CpfNumber) != 14 {
 		expectedError := errors.New("CPF Invalido")
 		assert.Equal(t, expectedError, err)
 	}
@@ -80,16 +80,22 @@ func TestUpdateCpf(t *testing.T) {
 	cpfUseCase := &usecase.CpfUsecase{
 		CpfInterface: CpfImplementation,
 	}
-
 	f := fuzz.New()
 	newCpf := generateCpf(f)
-	_, err := cpfUseCase.NewCpf(*newCpf) //Garante que um CPF vai existir
+	newCpfToupdate, err := cpfUseCase.NewCpf(*newCpf) //Garante que um CPF vai existir
+	if err != nil{
+		expectedError := errors.New("CPF Invalido")
+		assert.Equal(t, expectedError, err)
+	}
 
 	updatedCpf := updateCpf(f)
-	cpfToUpdate := newCpf.CpfNumber 
+	cpfToUpdate := newCpfToupdate.CpfNumber 
 
 	updateResponse, err := cpfUseCase.UpdateCpf(*updatedCpf, cpfToUpdate)
-
+	if len(newCpf.CpfNumber) != 11 && len(newCpf.CpfNumber) != 14 {
+		expectedError := errors.New("CPF Invalido")
+		assert.Equal(t, expectedError, err)
+	}
 	if err != nil {
 		assert.Equal(t, errors.New("CPF not found"), err)
 	} else {
@@ -122,34 +128,32 @@ func TestDeleteCpf(t *testing.T) {
 }
 
 func generateCpf(f *fuzz.Fuzzer) *dto.CpfDTO {
-	newCpf := &dto.CpfDTO{}
-	f.Fuzz(&newCpf.Name)
-	f.Fuzz(&newCpf.State)
-	f.Fuzz(&newCpf.City)
-	var cpfNumber []int 
-	for len(newCpf.CpfNumber) < 11 {
-		var newNumber int
-		f.Fuzz(&newNumber)
-		newNumber = int(math.Abs(float64(newNumber))) % 10
-		cpfNumber = append(cpfNumber, newNumber)
-	}
-	newCpf.CpfNumber = convertIntArrayToString(cpfNumber)
-	return newCpf
+    newCpf := &dto.CpfDTO{}
+    f.Fuzz(&newCpf.Name)
+    f.Fuzz(&newCpf.State)
+    f.Fuzz(&newCpf.City)
+
+    var cpfNumber []int
+    for len(cpfNumber) < 11 {
+        newNumber := rand.Intn(9) 
+        cpfNumber = append(cpfNumber, newNumber)
+    }
+    newCpf.CpfNumber = string(convertIntArrayToString(cpfNumber))
+    return newCpf
 }
 
 func updateCpf(f *fuzz.Fuzzer) *dto.CpfDTO {
 	newCpf := &dto.CpfDTO{}
-	f.Fuzz(&newCpf.Name)
-	f.Fuzz(&newCpf.State)
-	f.Fuzz(&newCpf.City)
-	var cpfNumber []int 
-	for len(newCpf.CpfNumber) < 11 {
-		var newNumber int
-		f.Fuzz(&newNumber)
-		newNumber = int(math.Abs(float64(newNumber))) % 10
-		cpfNumber = append(cpfNumber, newNumber)
-	}
-	newCpf.CpfNumber = convertIntArrayToString(cpfNumber)
-	return newCpf
+    f.Fuzz(&newCpf.Name)
+    f.Fuzz(&newCpf.State)
+    f.Fuzz(&newCpf.City)
+
+    var cpfNumber []int
+    for len(cpfNumber) < 11 {
+        newNumber := rand.Intn(9) 
+        cpfNumber = append(cpfNumber, newNumber)
+    }
+    newCpf.CpfNumber = string(convertIntArrayToString(cpfNumber))
+    return newCpf
 }
 
