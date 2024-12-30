@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	fuzz "github.com/google/gofuzz"
+	"github.com/mathgod152/CFPcheck/cmd/dbinit"
 	"github.com/mathgod152/CFPcheck/infra/database"
 	"github.com/mathgod152/CFPcheck/internal/dto"
 	"github.com/mathgod152/CFPcheck/internal/usecase"
@@ -13,7 +14,7 @@ import (
 )
 
 var (
-	CpfImplementation *database.CpfRepository
+	CpfImplementation = &database.CpfRepository{Db: dbinit.DB}
 )
 
 func TestNewCpf(t *testing.T) (){
@@ -25,12 +26,11 @@ func TestNewCpf(t *testing.T) (){
 	newCpf := generateCpf(f)
 
 	createCpfResponse, err := cpfUseCase.NewCpf(*newCpf)
-	if len(newCpf.CpfNumber) > 11 || len(newCpf.CpfNumber) < 11 {
+	if len(newCpf.CpfNumber) != 11 {
 		expectedError := errors.New("CPF Invalido")
 		assert.Equal(t, expectedError, err)
 	}
 	if len(newCpf.CpfNumber) == 11{
-		assert.Equal(t, newCpf.Id, createCpfResponse.Id)
 		assert.Equal(t, newCpf.Name, createCpfResponse.Name)
 		assert.Equal(t, newCpf.State, createCpfResponse.State)
 		assert.Equal(t, newCpf.City, createCpfResponse.City)
@@ -71,7 +71,7 @@ func TestSelectCpfById(t *testing.T) {
 		assert.Equal(t, errors.New("CPF not found"), err)
 	} else {
 		assert.NotNil(t, cpf)
-		assert.Equal(t, testId, cpf.Id)
+		assert.Equal(t, testId, cpf.CpfNumber)
 		assert.NoError(t, err)
 	}
 }
@@ -93,7 +93,6 @@ func TestUpdateCpf(t *testing.T) {
 	if err != nil {
 		assert.Equal(t, errors.New("CPF not found"), err)
 	} else {
-		assert.Equal(t, updatedCpf.Id, updateResponse.Id)
 		assert.Equal(t, updatedCpf.Name, updateResponse.Name)
 		assert.Equal(t, updatedCpf.State, updateResponse.State)
 		assert.Equal(t, updatedCpf.City, updateResponse.City)
@@ -124,16 +123,17 @@ func TestDeleteCpf(t *testing.T) {
 
 func generateCpf(f *fuzz.Fuzzer) *dto.CpfDTO {
 	newCpf := &dto.CpfDTO{}
-	f.Fuzz(&newCpf.Id)
 	f.Fuzz(&newCpf.Name)
 	f.Fuzz(&newCpf.State)
 	f.Fuzz(&newCpf.City)
-	for len(newCpf.CpfNumber) < 9 {
+	var cpfNumber []int 
+	for len(newCpf.CpfNumber) < 11 {
 		var newNumber int
 		f.Fuzz(&newNumber)
 		newNumber = int(math.Abs(float64(newNumber))) % 10
-		newCpf.CpfNumber = append(newCpf.CpfNumber, newNumber)
+		cpfNumber = append(cpfNumber, newNumber)
 	}
+	newCpf.CpfNumber = convertIntArrayToString(cpfNumber)
 	return newCpf
 }
 
@@ -142,11 +142,14 @@ func updateCpf(f *fuzz.Fuzzer) *dto.CpfDTO {
 	f.Fuzz(&newCpf.Name)
 	f.Fuzz(&newCpf.State)
 	f.Fuzz(&newCpf.City)
-	for len(newCpf.CpfNumber) < 9 {
+	var cpfNumber []int 
+	for len(newCpf.CpfNumber) < 11 {
 		var newNumber int
 		f.Fuzz(&newNumber)
 		newNumber = int(math.Abs(float64(newNumber))) % 10
-		newCpf.CpfNumber = append(newCpf.CpfNumber, newNumber)
+		cpfNumber = append(cpfNumber, newNumber)
 	}
+	newCpf.CpfNumber = convertIntArrayToString(cpfNumber)
 	return newCpf
 }
+

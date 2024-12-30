@@ -49,7 +49,7 @@ func (c *CpfUsecase) SelectCpfs() ([]dto.CpfDTO, error) {
 	return dtos, nil
 }
 
-func (c *CpfUsecase) SelectById(cpf []int) (dto.CpfDTO, error) {
+func (c *CpfUsecase) SelectById(cpf string) (dto.CpfDTO, error) {
 	entity, err := c.CpfInterface.GetCpf(cpf)
 	if err != nil {
 		return dto.CpfDTO{}, errors.New("Erro ao Receber os Dados")
@@ -62,7 +62,7 @@ func (c *CpfUsecase) SelectById(cpf []int) (dto.CpfDTO, error) {
 	}, nil
 }
 
-func (c *CpfUsecase) UpdateCpf(input dto.CpfDTO, cpfNumber []int) (dto.CpfDTO, error) {
+func (c *CpfUsecase) UpdateCpf(input dto.CpfDTO, cpfNumber string) (dto.CpfDTO, error) {
 	cpf := entity.CpfEntity{
 		Name:      input.Name,
 		City:      input.City,
@@ -81,7 +81,7 @@ func (c *CpfUsecase) UpdateCpf(input dto.CpfDTO, cpfNumber []int) (dto.CpfDTO, e
 	}, nil
 }
 
-func (c *CpfUsecase) DeleteCpf(cpf []int) (bool, error) {
+func (c *CpfUsecase) DeleteCpf(cpf string) (bool, error) {
 	deletedEntity, err := c.CpfInterface.Delete(cpf)
 	if err != nil {
 		return deletedEntity, err

@@ -5,7 +5,7 @@ type CpfEntity struct {
 	Name      string
 	City      string
 	State     string
-	CpfNumber []int
+	CpfNumber string
 }
 
 type CpfValidatorInterface interface {
@@ -16,7 +16,7 @@ type CpfValidatorInterface interface {
 type CpfInterface interface {
 	Create(cpfData *CpfEntity) (CpfEntity, error)
 	GetCpfs() ([]CpfEntity, error)
-	GetCpf(cpf []int) (CpfEntity, error)
-	Update(cpfData *CpfEntity, cpf []int) (CpfEntity, error)
-	Delete(cpf []int) (bool, error)
+	GetCpf(cpf string) (CpfEntity, error)
+	Update(cpfData *CpfEntity, cpf string) (CpfEntity, error)
+	Delete(cpf string) (bool, error)
 }
