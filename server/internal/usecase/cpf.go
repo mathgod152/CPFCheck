@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/mathgod152/CFPcheck/internal/dto"
 	"github.com/mathgod152/CFPcheck/internal/entity"
@@ -32,7 +33,7 @@ func (c *CpfUsecase) NewCpf(input dto.CpfDTO) (dto.CpfDTO, error) {
 func (c *CpfUsecase) SelectCpfs() ([]dto.CpfDTO, error) {
 	entities, err := c.CpfInterface.GetCpfs()
 	if err != nil {
-		return nil, errors.New("Erro ao Receber os Dados")
+		return nil, errors.New("Erro ao Receber os Dados" + fmt.Sprint(err))
 	}
 	var dtos []dto.CpfDTO
 	if len(entities) == 0 {
@@ -52,7 +53,7 @@ func (c *CpfUsecase) SelectCpfs() ([]dto.CpfDTO, error) {
 func (c *CpfUsecase) SelectById(cpf string) (dto.CpfDTO, error) {
 	entity, err := c.CpfInterface.GetCpf(cpf)
 	if err != nil {
-		return dto.CpfDTO{}, errors.New("Erro ao Receber os Dados")
+		return dto.CpfDTO{}, errors.New("Erro ao Receber os Dados" + fmt.Sprint(err))
 	}
 	return dto.CpfDTO{
 		Name:      entity.Name,

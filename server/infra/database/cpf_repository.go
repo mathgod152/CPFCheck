@@ -3,6 +3,8 @@ package database
 import (
 	"database/sql"
 	"errors"
+	"fmt"
+	"strconv"
 
 	"github.com/mathgod152/CFPcheck/internal/entity"
 )
@@ -14,7 +16,7 @@ type CpfRepository struct {
 }
 
 func (c *CpfRepository) Create(cpfData *entity.CpfEntity) (entity.CpfEntity, error) {
-	if len(cpfData.CpfNumber) != 11 {
+	if len(cpfData.CpfNumber) != 11  &&  len(cpfData.CpfNumber) != 14 {
 		return entity.CpfEntity{}, errors.New("CPF Invalido")
 	}
 	stmt, err := c.Db.Prepare("INSERT INTO cpf (name, city, state, cpf_number) VALUES ($1, $2, $3, $4)")
@@ -44,7 +46,7 @@ func (c *CpfRepository) GetCpfs() ([]entity.CpfEntity, error) {
 		var id int
 		var name, city, state, cpf_number string
 
-		if err := rows.Scan(&id, &name, &city, &state, &city, &cpf_number); err != nil {
+		if err := rows.Scan(&id, &name, &city, &state, &cpf_number); err != nil {
 			return nil, err
 		}
 		application := entity.CpfEntity{
@@ -70,7 +72,7 @@ func (c *CpfRepository) GetCpf(cpf string) (entity.CpfEntity, error) {
 		var id int
 		var name, city, state, cpf_number string
 
-		if err := rows.Scan(&id, &name, &city, &state, &city, &cpf_number); err != nil {
+		if err := rows.Scan(&id, &name, &city, &state, &cpf_number); err != nil {
 			return entity.CpfEntity{}, err
 		}
 		cpfs = entity.CpfEntity{
@@ -85,38 +87,52 @@ func (c *CpfRepository) GetCpf(cpf string) (entity.CpfEntity, error) {
 }
 
 func (c *CpfRepository) Update(cpfData *entity.CpfEntity, cpf string) (entity.CpfEntity, error) {
-	if len(cpf) != 11 {
+	fmt.Println("CPF: ", cpf, "LEN: ", len(cpf))
+	if len(cpf) != 11 && len(cpf) != 14 {
 		return entity.CpfEntity{}, errors.New("CPF inválido")
 	}
+
 	query := "UPDATE cpf SET "
 	args := []interface{}{}
 	i := 1
 
+	// Adiciona os campos dinamicamente
 	if cpfData.Name != "" {
-		query += "name = $" + string(rune(i)) + ", "
+		query += "name = $" + strconv.Itoa(i) + ", "
 		args = append(args, cpfData.Name)
 		i++
 	}
 	if cpfData.City != "" {
-		query += "city = $" + string(rune(i)) + ", "
+		query += "city = $" + strconv.Itoa(i) + ", "
 		args = append(args, cpfData.City)
 		i++
 	}
 	if cpfData.State != "" {
-		query += "state = $" + string(rune(i)) + ", "
+		query += "state = $" + strconv.Itoa(i) + ", "
 		args = append(args, cpfData.State)
 		i++
 	}
 	if cpfData.CpfNumber != "" && cpfData.CpfNumber != cpf {
-		query += "cpf_number = $" + string(rune(i)) + ", "
+		query += "cpf_number = $" + strconv.Itoa(i) + ", "
 		args = append(args, cpfData.CpfNumber)
 		i++
 	}
 
-	query = query[:len(query)-2]
-	query += " WHERE cpf_number = $" + string(rune(i))
+	// Verifica se ao menos um campo foi alterado
+	if len(args) == 0 {
+		return entity.CpfEntity{}, errors.New("nenhum campo para atualizar")
+	}
+
+	// Remove a última vírgula e adiciona a cláusula WHERE
+	query = query[:len(query)-2] // Remove ", "
+	query += " WHERE cpf_number = $" + strconv.Itoa(i)
 	args = append(args, cpf)
 
+	// Loga a query gerada e os argumentos para depuração
+	fmt.Println("Query final: ", query)
+	fmt.Println("Args: ", args)
+
+	// Prepara e executa a query
 	stmt, err := c.Db.Prepare(query)
 	if err != nil {
 		return entity.CpfEntity{}, err
@@ -126,9 +142,9 @@ func (c *CpfRepository) Update(cpfData *entity.CpfEntity, cpf string) (entity.Cp
 		return entity.CpfEntity{}, err
 	}
 
+	// Retorna o CPF atualizado
 	return c.GetCpf(cpf)
 }
-
 
 func (c *CpfRepository) Delete(cpf string) (bool, error) {
 	stmt, err := c.Db.Prepare("DELETE FROM cpf WHERE cpf_number = $1")

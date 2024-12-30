@@ -26,6 +26,10 @@ func (s *Server) Start(port string) error {
 
 	router.Post("/cpfValidator", apiRouter.ValidateCpfHandler)
 	router.Post("/savecpf", apiRouter.CreateCpfHandler)
+	router.Get("/cpfs", apiRouter.GetAllCpfsHandler)
+	router.Get("/cpf/:cpf", apiRouter.GetCpfHandler)
+	router.Put("/cpf/:cpf", apiRouter.UpdateCpfHandler)
+	router.Delete("/cpf/:cpf", apiRouter.DeleteCpfHandler)
 
 	return app.Listen(port)
 }
