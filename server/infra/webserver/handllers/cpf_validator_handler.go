@@ -1,6 +1,8 @@
 package handlers
 
 import (
+	"fmt"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/mathgod152/CFPcheck/internal/dto"
 )
@@ -9,7 +11,7 @@ func (_r *Router) ValidateCpfHandler(c *fiber.Ctx) error {
 	var cpf dto.CpfValidatorDTO
 	if err := c.BodyParser(&cpf); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"message": "Invalid request payload",
+			"message": "Invalid request payload" + fmt.Sprint(err),
 		})
 	}
 	validateFormat, err := _r.CpfValidator.ConvertToValidateFormat(cpf.CPF)

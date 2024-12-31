@@ -83,6 +83,7 @@ func (c *CpfRepository) GetCpf(cpf string) (entity.CpfEntity, error) {
 			CpfNumber: cpf_number,
 		}
 	}
+	fmt.Println("CPF RETURNS: ", cpfs)
 	return cpfs, nil
 }
 
@@ -96,7 +97,6 @@ func (c *CpfRepository) Update(cpfData *entity.CpfEntity, cpf string) (entity.Cp
 	args := []interface{}{}
 	i := 1
 
-	// Adiciona os campos dinamicamente
 	if cpfData.Name != "" {
 		query += "name = $" + strconv.Itoa(i) + ", "
 		args = append(args, cpfData.Name)
@@ -118,21 +118,17 @@ func (c *CpfRepository) Update(cpfData *entity.CpfEntity, cpf string) (entity.Cp
 		i++
 	}
 
-	// Verifica se ao menos um campo foi alterado
 	if len(args) == 0 {
 		return entity.CpfEntity{}, errors.New("nenhum campo para atualizar")
 	}
 
-	// Remove a última vírgula e adiciona a cláusula WHERE
 	query = query[:len(query)-2] // Remove ", "
 	query += " WHERE cpf_number = $" + strconv.Itoa(i)
 	args = append(args, cpf)
 
-	// Loga a query gerada e os argumentos para depuração
 	fmt.Println("Query final: ", query)
 	fmt.Println("Args: ", args)
 
-	// Prepara e executa a query
 	stmt, err := c.Db.Prepare(query)
 	if err != nil {
 		return entity.CpfEntity{}, err
@@ -141,9 +137,7 @@ func (c *CpfRepository) Update(cpfData *entity.CpfEntity, cpf string) (entity.Cp
 	if err != nil {
 		return entity.CpfEntity{}, err
 	}
-
-	// Retorna o CPF atualizado
-	return c.GetCpf(cpf)
+	return c.GetCpf(cpfData.CpfNumber)
 }
 
 func (c *CpfRepository) Delete(cpf string) (bool, error) {
