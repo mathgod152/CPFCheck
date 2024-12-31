@@ -24,17 +24,30 @@ func init(){
 	var(
 		CpfValidateImplementation = &implemantation.CpfValidatorImplementation{}
 		CpfImplementation = &database.CpfRepository{Db: dbinit.DB}
+
+		CnpjValidateImplementation = &implemantation.CnpjValidatorImplementation{}
+		CnpjImplementation = &database.CnpjRepository{Db: dbinit.DB}
+
 		runCpfValidator = &usecase.CpfValidatorUseCase{
 			CpfValidatorEntity: CpfValidateImplementation, // Injetando a implementação 
 		}
 		runCpf = &usecase.CpfUsecase{
 			CpfInterface: CpfImplementation,
 		}
+
+		runCnpjValidator = &usecase.CnpjValidatorUseCase{
+			CnpjValidatorEntity: CnpjValidateImplementation, // Injetando a implementação 
+		}
+		runCnpj = &usecase.CnpjUsecase{
+			CnpjInterface: CnpjImplementation,
+		}
 	)
 
 	serverImpl = &web.Server{
 		CpfValidator: runCpfValidator,
 		Cpf: runCpf,
+		CnpjValidator: runCnpjValidator,
+		Cnpj: runCnpj,
 	}
 }
 

@@ -1,6 +1,8 @@
 GET http://localhost:5000 HTTP/1.1
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NjU1MDQxNDAsInN1YiI6IjFhZmE4MjBiLWY3OWItNDZlYi1hOWQzLWVmNjE4OTFlYTUwMSJ9.9GrED1FqYxU6cslds9bs75f8x1oXK8FrQ8DncHfOl7c
 
+
+// CPF
 ###
 POST http://localhost:5000/api/v1/cpfValidator HTTP/1.1
 Content-Type: application/json
@@ -43,3 +45,53 @@ Content-Type: application/json
 ###
 
 DELETE http://localhost:5000/api/v1/cpf/503.278.618-78 HTTP/1.1
+
+###
+
+//CNPJ
+
+POST http://localhost:5000/api/v1/cnpjValidator HTTP/1.1
+Content-Type: application/json
+
+{
+  "cnpj_number": "03.086.811/0001-45"
+}
+
+###
+
+POST http://localhost:5000/api/v1/savecnpj HTTP/1.1
+Content-Type: application/json
+
+{
+  "name": "Matheus",
+  "city":"Cajati",
+  "state":"São Paulo",
+  "cnpjNumber": "503.278.618-78"
+}
+
+###
+
+GET http://localhost:5000/api/v1/cnpjs HTTP/1.1
+
+###
+
+GET http://localhost:5000/api/v1/cnpj/503.278.618-78 HTTP/1.1
+
+###
+
+PUT http://localhost:5000/api/v1/cnpj/503.278.618-78 HTTP/1.1
+Content-Type: application/json
+
+{
+  "name": "Matheus Henrique Corp",
+  "city": "Registro",
+  "state": "São Paulo"
+}
+
+###
+//Server
+
+GET http://localhost:5000/api/v1/server-info HTTP/1.1
+
+###
+

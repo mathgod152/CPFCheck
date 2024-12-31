@@ -8,19 +8,19 @@ import (
 	"github.com/mathgod152/CFPcheck/internal/dto"
 )
 
-func (_r *Router) CreateCpfHandler(c *fiber.Ctx) error {
-	var cpf dto.CpfDTO
-	if err := c.BodyParser(&cpf); err != nil {
+func (_r *Router) CreateCnpjHandler(c *fiber.Ctx) error {
+	var cnpj dto.CnpjDTO
+	if err := c.BodyParser(&cnpj); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"message": "Invalid request payload",
 		})
 	}
-	if  !midware.ValidateCpf(cpf.CpfNumber){
+	if  !midware.ValidateCnpj(cnpj.CnpjNumber){
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"message": "CPF INVALIDO",
+			"message": "Cnpj INVALIDO",
 		})
 	}
-	validateFormat, err := _r.Cpf.NewCpf(cpf)
+	validateFormat, err := _r.Cnpj.NewCnpj(cnpj)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"message": "Error 500" + fmt.Sprint(err),
@@ -31,66 +31,66 @@ func (_r *Router) CreateCpfHandler(c *fiber.Ctx) error {
 	})
 }
 
-func (_r *Router) GetAllCpfsHandler(c *fiber.Ctx) error {
-	cpfs, err := _r.Cpf.SelectCpfs()
+func (_r *Router) GetAllCnpjsHandler(c *fiber.Ctx) error {
+	cnpjs, err := _r.Cnpj.SelectCnpjs()
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"message": "Error retrieving CPFs" + fmt.Sprint(err),
+			"message": "Error retrieving Cnpjs" + fmt.Sprint(err),
 		})
 	}
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
-		"response": cpfs,
+		"response": cnpjs,
 	})
 }
 
-func (_r *Router) GetCpfHandler(c *fiber.Ctx) error {
-	cpfNumber := c.Params("cpf")
-	cpf, err := _r.Cpf.SelectById(cpfNumber)
+func (_r *Router) GetCnpjHandler(c *fiber.Ctx) error {
+	cnpjNumber := c.Params("cnpj")
+	cnpj, err := _r.Cnpj.SelectById(cnpjNumber)
 	if err != nil {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
-			"message": "CPF not found" + fmt.Sprint(err),
+			"message": "Cnpj not found" + fmt.Sprint(err),
 		})
 	}
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
-		"response": cpf,
+		"response": cnpj,
 	})
 }
 
-func (_r *Router) UpdateCpfHandler(c *fiber.Ctx) error {
-	cpfNumber := c.Params("cpf")
-	fmt.Println("CPF: ", cpfNumber)
-	var cpf dto.CpfDTO
-	if err := c.BodyParser(&cpf); err != nil {
+func (_r *Router) UpdateCnpjHandler(c *fiber.Ctx) error {
+	cnpjNumber := c.Params("cnpj")
+	fmt.Println("Cnpj: ", cnpjNumber)
+	var cnpj dto.CnpjDTO
+	if err := c.BodyParser(&cnpj); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"message": "Invalid request payload",
 		})
 	}
-	updatedCpf, err := _r.Cpf.UpdateCpf(cpf, cpfNumber)
+	updatedCnpj, err := _r.Cnpj.UpdateCnpj(cnpj, cnpjNumber)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"message": "Error updating CPF" + fmt.Sprint(err),
+			"message": "Error updating Cnpj" + fmt.Sprint(err),
 		})
 	}
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
-		"response": updatedCpf,
+		"response": updatedCnpj,
 	})
 }
 
-func (_r *Router) DeleteCpfHandler(c *fiber.Ctx) error {
-	cpfNumber := c.Params("cpf")
-	success, err := _r.Cpf.DeleteCpf(cpfNumber)
+func (_r *Router) DeleteCnpjHandler(c *fiber.Ctx) error {
+	cnpjNumber := c.Params("cnpj")
+	success, err := _r.Cnpj.DeleteCnpj(cnpjNumber)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"message": "Error deleting CPF" + fmt.Sprint(err),
+			"message": "Error deleting Cnpj" + fmt.Sprint(err),
 		})
 	}
 	if !success {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
-			"message": "CPF not found",
+			"message": "Cnpj not found",
 		})
 	}
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
-		"message": "CPF deleted successfully",
+		"message": "Cnpj deleted successfully",
 	})
 }
 

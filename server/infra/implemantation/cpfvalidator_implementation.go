@@ -8,11 +8,15 @@ import (
 	"github.com/mathgod152/CFPcheck/internal/entity"
 )
 
-var _ entity.CpfValidatorInterface = (*CpfValidatorImplementation)(nil)
 
+var _ entity.CpfValidatorInterface = (*CpfValidatorImplementation)(nil)
+ 
 type CpfValidatorImplementation struct{}
 
 func (c *CpfValidatorImplementation) ConverteToIntArray(cpf string) ([]int, error) {
+	if len(cpf) != 11  &&  len(cpf) != 14 {
+		return nil, errors.New("CPF Invalido")
+	}
 	cpfDigits := regexp.MustCompile(`\D`).ReplaceAllString(cpf, "")
 
 	if len(cpfDigits) != 11 {
@@ -39,16 +43,16 @@ func (c *CpfValidatorImplementation) Verify(cpfNumber []int) (bool) {
 	if allElementsEqual(cpfNumber){
 		return false
 	}
-	if !verifyFirstDigit(cpfNumber){
+	if !verifyCPFFirstDigit(cpfNumber){
 		return false
 	}
-	if !verifySecondDigit(cpfNumber){
+	if !verifyCPFSecondDigit(cpfNumber){
 		return false
 	}
     return true
 }
 
-func verifyFirstDigit(cpfNumber []int)(bool){
+func verifyCPFFirstDigit(cpfNumber []int)(bool){
 	firstNine := cpfNumber[:9]
 	firstVerifierDigit := cpfNumber[9]
 	var sumFirstVerifierDigit int
@@ -66,7 +70,7 @@ func verifyFirstDigit(cpfNumber []int)(bool){
 	return true
 }
 
-func verifySecondDigit(cpfNumber []int)(bool){
+func verifyCPFSecondDigit(cpfNumber []int)(bool){
 	secondVerifierDigit := cpfNumber[10]
     firstTen := cpfNumber[:10]
     var sumSecondVerifierDigit int

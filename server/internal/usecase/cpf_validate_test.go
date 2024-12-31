@@ -34,7 +34,7 @@ func TestCpfValidate(t *testing.T) {
 	}
 }
 
-func TestConvertToValidateFormatWithFuzzer(t *testing.T) {
+func TestConvertCpfToValidateFormatWithFuzzer(t *testing.T) {
 	cpfValidateUseCase := &usecase.CpfValidatorUseCase{
 		CpfValidatorEntity: CpfValidateImplementation, // Injetando a implementação 
 	}
