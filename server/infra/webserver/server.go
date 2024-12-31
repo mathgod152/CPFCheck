@@ -4,8 +4,8 @@ import (
 	"time"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/mathgod152/CFPcheck/infra/implemantation"
 	handlers "github.com/mathgod152/CFPcheck/infra/webserver/handllers"
-	"github.com/mathgod152/CFPcheck/infra/webserver/midware"
 	"github.com/mathgod152/CFPcheck/internal/entity"
 	"github.com/mathgod152/CFPcheck/internal/usecase"
 )
@@ -15,15 +15,15 @@ var _ entity.Server = (*Server)(nil)
 type Server struct {
 	CpfValidator   *usecase.CpfValidatorUseCase
 	Cpf            *usecase.CpfUsecase
-	CnpjValidator   *usecase.CnpjValidatorUseCase
-	Cnpj            *usecase.CnpjUsecase
+	CnpjValidator  *usecase.CnpjValidatorUseCase
+	Cnpj           *usecase.CnpjUsecase
 	StartTime      time.Time
-	RequestCounter *midware.RequestCounter
+	RequestCounter *implemantation.RequestCounter
 }
 
 func (s *Server) Start(port string) error {
 	// Inicializa o contador de requisições
-	s.RequestCounter = midware.NewRequestCounter()
+	s.RequestCounter = implemantation.NewRequestCounter()
 	s.StartTime = time.Now()
 
 	// Configura o roteador

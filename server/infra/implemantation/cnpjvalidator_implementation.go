@@ -2,6 +2,7 @@ package implemantation
 
 import (
 	"errors"
+	"fmt"
 	"regexp"
 	"strconv"
 
@@ -13,13 +14,17 @@ var _ entity.CnpjValidatorInterface = (*CnpjValidatorImplementation)(nil)
 type CnpjValidatorImplementation struct{}
 
 func (c *CnpjValidatorImplementation) ConverteToIntArray(cnpj string) ([]int, error) {
-	if len(cnpj) != 14  &&  len(cnpj) != 18 {
-		return nil, errors.New("Cnpj Invalido")
-	}
+	fmt.Println("Entrou na implementação")
+
 	// Remove caracteres não numéricos
 	cnpjDigits := regexp.MustCompile(`\D`).ReplaceAllString(cnpj, "")
 
+	// Verifique o comprimento da string após a limpeza
+	if len(cnpjDigits) != 14 {
+		return nil, errors.New("CNPJ inválido: deve conter exatamente 14 dígitos")
+	}
 
+	// Converta os caracteres para inteiros
 	intArray := make([]int, len(cnpjDigits))
 	for i, char := range cnpjDigits {
 		num, err := strconv.Atoi(string(char))

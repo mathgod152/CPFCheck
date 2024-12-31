@@ -40,7 +40,8 @@ func TestConvertCnpjToValidateFormatWithFuzzer(t *testing.T) {
 	// Testar CNPJs válidos
 	for i := 0; i < 1000; i++ {
 		trueCnpj := generateTrueCnpj(f)
-		cnpjStr := convertIntArrayToString(trueCnpj)
+		cnpjStr := convertCNPJIntArrayToString(trueCnpj)
+		fmt.Println("CNPJ: ", cnpjStr)
 
 		t.Run(fmt.Sprintf("Valid CNPJ #%d", i), func(t *testing.T) {
 			result, err := cnpjValidateUseCase.ConvertToValidateFormat(cnpjStr)
@@ -144,3 +145,17 @@ func generateCnpjFakeSecondVerifierDigit(fd []int) int {
 }
 
 
+func convertCNPJIntArrayToString(cnpj []int) string {
+	cnpjStr := ""
+	for i, num := range cnpj {
+		cnpjStr += fmt.Sprintf("%d", num)
+		if i == 1 || i == 4 {
+			cnpjStr += "."
+		} else if i == 7 {
+			cnpjStr += "/"
+		} else if i == 11 {
+			cnpjStr += "-"
+		}
+	}
+	return cnpjStr
+}
