@@ -52,8 +52,8 @@ func (c *CnpjRepository) GetCnpjs() ([]entity.CnpjEntity, error) {
 		application := entity.CnpjEntity{
 			Id:        id,
 			Name:      name,
-			State:     city,
-			City:      state,
+			State:     state,
+			City:      city,
 			CnpjNumber: cnpj_number,
 		}
 		cnpjs = append(cnpjs, application)
@@ -78,8 +78,8 @@ func (c *CnpjRepository) GetCnpj(cnpj string) (entity.CnpjEntity, error) {
 		cnpjs = entity.CnpjEntity{
 			Id:        id,
 			Name:      name,
-			State:     city,
-			City:      state,
+			State:     state,
+			City:      city,
 			CnpjNumber: cnpj_number,
 		}
 	}

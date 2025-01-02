@@ -52,8 +52,8 @@ func (c *CpfRepository) GetCpfs() ([]entity.CpfEntity, error) {
 		application := entity.CpfEntity{
 			Id:        id,
 			Name:      name,
-			State:     city,
-			City:      state,
+			State:     state,
+			City:      city,
 			CpfNumber: cpf_number,
 		}
 		cpfs = append(cpfs, application)
@@ -78,8 +78,8 @@ func (c *CpfRepository) GetCpf(cpf string) (entity.CpfEntity, error) {
 		cpfs = entity.CpfEntity{
 			Id:        id,
 			Name:      name,
-			State:     city,
-			City:      state,
+			State:     state,
+			City:      city,
 			CpfNumber: cpf_number,
 		}
 	}

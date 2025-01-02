@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/mathgod152/CFPcheck/infra/implemantation"
 	handlers "github.com/mathgod152/CFPcheck/infra/webserver/handllers"
 	"github.com/mathgod152/CFPcheck/internal/entity"
@@ -36,6 +37,14 @@ func (s *Server) Start(port string) error {
 
 	app := fiber.New()
 
+	//CORS
+	app.Use(cors.New(cors.Config{
+		AllowOrigins: "*", // APENAS PARA DEV
+		AllowMethods: "GET,POST,PUT,DELETE,OPTIONS",
+		AllowHeaders: "Origin, Content-Type, Accept",
+	}))
+
+	// Middleware para contar requisições
 	app.Use(s.RequestCounter.CountRequest())
 
 	// Roteamento da API
@@ -48,7 +57,7 @@ func (s *Server) Start(port string) error {
 	router.Put("/cpf/:cpf", apiRouter.UpdateCpfHandler)
 	router.Delete("/cpf/:cpf", apiRouter.DeleteCpfHandler)
 
-	//CNPJ
+	// CNPJ
 	router.Post("/cnpjValidator", apiRouter.ValidateCnpjHandler)
 	router.Post("/savecnpj", apiRouter.CreateCnpjHandler)
 	router.Get("/cnpjs", apiRouter.GetAllCnpjsHandler)
