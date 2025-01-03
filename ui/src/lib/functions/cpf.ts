@@ -3,7 +3,7 @@ import type { ICpf } from "$lib/types/cpf";
 export async function validateCpf(cpfNumber: string) {
   console.log("cpf to validate:", cpfNumber )
   try {
-    const response = await fetch(`http://localhost:5000/api/v1/cpfValidator`, {
+    const response = await fetch(`/api/v1/cpfValidator`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -28,7 +28,7 @@ export async function validateCpf(cpfNumber: string) {
 
 export async function createeCpf(cpfData: ICpf) {
   try {
-    const response = await fetch(`http://localhost:5000/api/v1/savecpf`, {
+    const response = await fetch(`/api/v1/savecpf`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -56,7 +56,7 @@ export async function createeCpf(cpfData: ICpf) {
 
 export async function updateCpf(cpfToUpdate:string ,cpfData: ICpf) {
   try {
-    const response = await fetch(`http://localhost:5000/api/v1/cpf/${cpfToUpdate}`, {
+    const response = await fetch(`/api/v1/cpf/${cpfToUpdate}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -84,7 +84,7 @@ export async function updateCpf(cpfToUpdate:string ,cpfData: ICpf) {
 
 export async function deleteCpf(cpfToDelete:string) {
   try {
-    const response = await fetch(`http://localhost:5000/api/v1/cpf/${cpfToDelete}`, {
+    const response = await fetch(`/api/v1/cpf/${cpfToDelete}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -105,7 +105,7 @@ export async function deleteCpf(cpfToDelete:string) {
 }
 export async function addCpfToBlockList(cpfToAdd:string) {
   try {
-    const response = await fetch(`http://localhost:5000/api/v1/addblocklistcpf/${cpfToAdd}`, {
+    const response = await fetch(`/api/v1/addblocklistcpf/${cpfToAdd}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -126,7 +126,7 @@ export async function addCpfToBlockList(cpfToAdd:string) {
 }
 export async function reemoveCpfToBlockList(cpfToReemovee:string) {
   try {
-    const response = await fetch(`http://localhost:5000/api/v1/removeblocklistcpf/${cpfToReemovee}`, {
+    const response = await fetch(`/api/v1/removeblocklistcpf/${cpfToReemovee}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -148,7 +148,7 @@ export async function reemoveCpfToBlockList(cpfToReemovee:string) {
 
 export async function InfosCpf(): Promise<ICpf[]> {
   try {
-    const response = await fetch(`http://localhost:5000/api/v1/cpfs`, {
+    const response = await fetch(`/api/v1/cpfs`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -174,7 +174,7 @@ export async function InfosCpf(): Promise<ICpf[]> {
 
 export async function getBlockListCpfs(): Promise<ICpf[]> {
   try {
-    const response = await fetch(`http://localhost:5000/api/v1/blocklistcpfs`, {
+    const response = await fetch(`/api/v1/blocklistcpfs`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

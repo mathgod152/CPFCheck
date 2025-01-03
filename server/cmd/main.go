@@ -20,7 +20,6 @@ var (
 )
 
 func init(){
-
 	var(
 		CpfValidateImplementation = &implemantation.CpfValidatorImplementation{}
 		CpfImplementation = &database.CpfRepository{Db: dbinit.DB}

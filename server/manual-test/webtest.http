@@ -1,39 +1,39 @@
-GET http://localhost:5000 HTTP/1.1
+GET  HTTP/1.1
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NjU1MDQxNDAsInN1YiI6IjFhZmE4MjBiLWY3OWItNDZlYi1hOWQzLWVmNjE4OTFlYTUwMSJ9.9GrED1FqYxU6cslds9bs75f8x1oXK8FrQ8DncHfOl7c
 
 
 // CPF
 ###
-POST http://localhost:5000/api/v1/cpfValidator HTTP/1.1
+POST /api/v1/cpfValidator HTTP/1.1
 Content-Type: application/json
 
 {
-  "cpf_number": "503.278.618-78"
+  "cpf_number": ""
 }
 
 ###
 
-POST http://localhost:5000/api/v1/savecpf HTTP/1.1
+POST /api/v1/savecpf HTTP/1.1
 Content-Type: application/json
 
 {
   "name": "Matheus Lemos",
   "city":"Curitiba",
   "state":"PR",
-  "cpfNumber": "503.278.618-78"
+  "cpfNumber": ""
 }
 
 ###
 
-GET http://localhost:5000/api/v1/cpfs HTTP/1.1
+GET /api/v1/cpfs HTTP/1.1
 
 ###
 
-GET http://localhost:5000/api/v1/cpf/503.278.618-78 HTTP/1.1
+GET /api/v1/cpf/503.278.618-78 HTTP/1.1
 
 ###
 
-PUT http://localhost:5000/api/v1/cpf/503.278.618-78 HTTP/1.1
+PUT /api/v1/cpf/503.278.618-78 HTTP/1.1
 Content-Type: application/json
 
 {
@@ -44,57 +44,57 @@ Content-Type: application/json
 
 ###
 
-PUT http://localhost:5000/api/v1/addblocklistcpf/503.278.618-78 HTTP/1.1
+PUT /api/v1/addblocklistcpf/{numerodecpf} HTTP/1.1
 Content-Type: application/json
 
 ###
 
-PUT http://localhost:5000/api/v1/removeblocklistcpf/684.451.111-55 HTTP/1.1
+PUT /api/v1/removeblocklistcpf/{numerodecpf} HTTP/1.1
 Content-Type: application/json
 
 ###
 
-Get http://localhost:5000/api/v1/blocklistcpfs HTTP/1.1
+Get /api/v1/blocklistcpfs HTTP/1.1
 Content-Type: application/json
 
 ###
 
-DELETE http://localhost:5000/api/v1/cpf/253.325.658-79 HTTP/1.1
+DELETE /api/v1/cpf/{numerodecpf} HTTP/1.1
 
 ###
 
 //CNPJ
 
-POST http://localhost:5000/api/v1/cnpjValidator HTTP/1.1
+POST /api/v1/cnpjValidator HTTP/1.1
 Content-Type: application/json
 
 {
-  "cnpj_number": "03.086.811/0001-45"
+  "cnpj_number": "{numerodecnpj}"
 }
 
 ###
 
-POST http://localhost:5000/api/v1/savecnpj HTTP/1.1
+POST /api/v1/savecnpj HTTP/1.1
 Content-Type: application/json
 
 {
   "name": "Matheus",
   "city":"Cajati",
   "state":"São Paulo",
-  "cnpjNumber": "03.086.811/0001-45"
+  "cnpjNumber": "{numerodecnpj}"
 }
 
 ###
 
-GET http://localhost:5000/api/v1/cnpjs HTTP/1.1
+GET /api/v1/cnpjs HTTP/1.1
 
 ###
 
-GET http://localhost:5000/api/v1/cnpj/03.086.811%2F0001-45 HTTP/1.1
+GET /api/v1/cnpj/{numerodecnpj(lembrar de adicionar %2f caso utilize /)} HTTP/1.1
 
 ###
 
-PUT http://localhost:5000/api/v1/cnpj/03.086.811%2F0001-45 HTTP/1.1
+PUT /api/v1/cnpj/{numerodecnpj(lembrar de adicionar %2f caso utilize /)} HTTP/1.1
 Content-Type: application/json
 
 {
@@ -103,27 +103,27 @@ Content-Type: application/json
   "state": "São Paulo"
 }
 ###
-DELETE  http://localhost:5000/api/v1/cnpj/436.480.202-44 HTTP/1.1
+DELETE  /api/v1/cnpj/{numerodecnpj(lembrar de adicionar %2f caso utilize /)} HTTP/1.1
 Content-Type: application/json
 ###
 
-PUT http://localhost:5000/api/v1/addblocklistcnpj/03.086.811%2F0001-45 HTTP/1.1
-Content-Type: application/json
-
-###
-
-PUT http://localhost:5000/api/v1/removeblocklistcnpj/03.086.811%2F0001-45 HTTP/1.1
+PUT /api/v1/addblocklistcnpj/{numerodecnpj(lembrar de adicionar %2f caso utilize /)} HTTP/1.1
 Content-Type: application/json
 
 ###
 
-Get http://localhost:5000/api/v1/blocklistcnpjs HTTP/1.1
+PUT /api/v1/removeblocklistcnpj/{numerodecnpj(lembrar de adicionar %2f caso utilize /)} HTTP/1.1
+Content-Type: application/json
+
+###
+
+Get /api/v1/blocklistcnpjs HTTP/1.1
 Content-Type: application/json
 
 ###
 //Server
 
-GET http://localhost:5000/api/v1/server-info HTTP/1.1
+GET /api/v1/server-info HTTP/1.1
 
 ###
 

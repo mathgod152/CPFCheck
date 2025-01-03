@@ -3,7 +3,7 @@ import type { ICnpj } from "$lib/types/cnpj";
 export async function validateCnpj(cnpjNumber: string) {
   console.log("cnpj to validate:", cnpjNumber);
   try {
-    const response = await fetch(`http://localhost:5000/api/v1/cnpjValidator`, {
+    const response = await fetch(`/api/v1/cnpjValidator`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -27,7 +27,7 @@ export async function validateCnpj(cnpjNumber: string) {
 
 export async function createeCnpj(cnpjData: ICnpj) {
   try {
-    const response = await fetch(`http://localhost:5000/api/v1/savecnpj`, {
+    const response = await fetch(`/api/v1/savecnpj`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -57,7 +57,7 @@ export async function updateCnpj(cnpjToUpdate: string, cnpjData: ICnpj) {
   const encodedCnpj = cnpjToUpdate.replace(/\//g, "%2F");
   try {
     const response = await fetch(
-      `http://localhost:5000/api/v1/cnpj/${encodedCnpj}`,
+      `/api/v1/cnpj/${encodedCnpj}`,
       {
         method: "PUT",
         headers: {
@@ -89,7 +89,7 @@ export async function deleteCnpj(cnpjToDelete: string) {
   const encodedCnpj = cnpjToDelete.replace(/\//g, "%2F");
   try {
     const response = await fetch(
-      `http://localhost:5000/api/v1/cnpj/${encodedCnpj}`,
+      `/api/v1/cnpj/${encodedCnpj}`,
       {
         method: "DELETE",
         headers: {
@@ -114,7 +114,7 @@ export async function addCnpjToBlockList(cnpjToAdd: string) {
   const encodedCnpj = cnpjToAdd.replace(/\//g, "%2F");
   try {
     const response = await fetch(
-      `http://localhost:5000/api/v1/addblocklistcnpj/${encodedCnpj}`,
+      `/api/v1/addblocklistcnpj/${encodedCnpj}`,
       {
         method: "PUT",
         headers: {
@@ -139,7 +139,7 @@ export async function reemoveCnpjToBlockList(cnpjToReemovee: string) {
   const encodedCnpj = cnpjToReemovee.replace(/\//g, "%2F");
   try {
     const response = await fetch(
-      `http://localhost:5000/api/v1/removeblocklistcnpj/${encodedCnpj}`,
+      `/api/v1/removeblocklistcnpj/${encodedCnpj}`,
       {
         method: "PUT",
         headers: {
@@ -163,7 +163,7 @@ export async function reemoveCnpjToBlockList(cnpjToReemovee: string) {
 
 export async function InfosCnpj(): Promise<ICnpj[]> {
   try {
-    const response = await fetch(`http://localhost:5000/api/v1/cnpjs`, {
+    const response = await fetch(`/api/v1/cnpjs`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -190,7 +190,7 @@ export async function InfosCnpj(): Promise<ICnpj[]> {
 export async function getBlockListCnpjs(): Promise<ICnpj[]> {
   try {
     const response = await fetch(
-      `http://localhost:5000/api/v1/blocklistcnpjs`,
+      `/api/v1/blocklistcnpjs`,
       {
         method: "GET",
         headers: {

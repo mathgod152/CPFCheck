@@ -1,6 +1,8 @@
 package web
 
 import (
+	"fmt"
+	"os"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -23,6 +25,13 @@ type Server struct {
 }
 
 func (s *Server) Start(port string) error {
+	// Imprime o diretório de trabalho atual para verificação
+	cwd, err := os.Getwd()
+	if err != nil {
+		return err
+	}
+	fmt.Println("Current working directory:", cwd)
+
 	// Inicializa o contador de requisições
 	s.RequestCounter = implemantation.NewRequestCounter()
 	s.StartTime = time.Now()
@@ -38,8 +47,10 @@ func (s *Server) Start(port string) error {
 	}
 
 	app := fiber.New()
+	fmt.Println("Mudou")
+	app.Static("/", "../public")
 
-	//CORS
+	// CORS
 	app.Use(cors.New(cors.Config{
 		AllowOrigins: "*", // APENAS PARA DEV
 		AllowMethods: "GET,POST,PUT,DELETE,OPTIONS",
@@ -48,6 +59,12 @@ func (s *Server) Start(port string) error {
 
 	// Middleware para contar requisições
 	app.Use(s.RequestCounter.CountRequest())
+
+	// Middleware de logging para debug (verificando as requisições)
+	app.Use(func(c *fiber.Ctx) error {
+		fmt.Println("Request URL:", c.OriginalURL())
+		return c.Next()
+	})
 
 	// Roteamento da API
 	router := app.Group("/api/v1")
