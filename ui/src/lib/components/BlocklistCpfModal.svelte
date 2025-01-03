@@ -4,13 +4,6 @@
   import { onMount } from "svelte";
 
   let data: ICpf[] = [];
-  let selectedItem: ICpf = {
-    name: "",
-    city: "",
-    state: "",
-    type: "CPF",
-    cpfNumber: "",
-  };
   onMount(async () => {
     const loadedData = await getBlockListCpfs(); 
     data = [...loadedData]; 
@@ -25,7 +18,6 @@
   const isRemoveToBlockList = await reemoveCpfToBlockList(item.cpfNumber);
   if (isRemoveToBlockList) {
     console.log("CPF atualizado com sucesso!");
-    // Atualize a lista para remover o item localmente
     data = data.filter((cpf) => cpf.cpfNumber !== item.cpfNumber);
   } else {
     console.error("Falha ao atualizar o CPF.");

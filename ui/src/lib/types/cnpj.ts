@@ -1,5 +1,4 @@
 export interface ICnpj {
-    id: number;
     name: string;
     city: string;
     state: string;

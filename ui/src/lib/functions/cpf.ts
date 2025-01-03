@@ -1,6 +1,7 @@
 import type { ICpf } from "$lib/types/cpf";
 
 export async function validateCpf(cpfNumber: string) {
+  console.log("cpf to validate:", cpfNumber )
   try {
     const response = await fetch(`http://localhost:5000/api/v1/cpfValidator`, {
       method: "POST",
@@ -15,7 +16,6 @@ export async function validateCpf(cpfNumber: string) {
     const validate = await response.json();
     console.log("API RESPONSE", validate);
 
-    // Acessar e retornar a propriedade 'response' como string
     const validationResult = validate.response.toString();
     console.log("Validation Result:", validationResult);
 

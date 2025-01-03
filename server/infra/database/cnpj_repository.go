@@ -89,7 +89,7 @@ func (c *CnpjRepository) GetCnpj(cnpj string) (entity.CnpjEntity, error) {
 
 func (c *CnpjRepository) Update(cnpjData *entity.CnpjEntity, cnpj string) (entity.CnpjEntity, error) {
 	fmt.Println("Cnpj: ", cnpj, "LEN: ", len(cnpj))
-	if len(cnpjData.CnpjNumber) != 14  &&  len(cnpjData.CnpjNumber) != 18 {
+	if len(cnpjData.CnpjNumber) != 14  &&  len(cnpjData.CnpjNumber) != 18 && cnpjData.CnpjNumber != "" {
 		return entity.CnpjEntity{}, errors.New("Cnpj Invalido")
 	}
 

@@ -2,7 +2,6 @@ package implemantation
 
 import (
 	"errors"
-	"fmt"
 	"regexp"
 	"strconv"
 
@@ -14,7 +13,6 @@ var _ entity.CnpjValidatorInterface = (*CnpjValidatorImplementation)(nil)
 type CnpjValidatorImplementation struct{}
 
 func (c *CnpjValidatorImplementation) ConverteToIntArray(cnpj string) ([]int, error) {
-	fmt.Println("Entrou na implementação")
 
 	// Remove caracteres não numéricos
 	cnpjDigits := regexp.MustCompile(`\D`).ReplaceAllString(cnpj, "")

@@ -10,7 +10,28 @@
     updateCpf,
   } from "$lib/functions/cpf";
   import type { ICpf } from "$lib/types/cpf";
-  import BlackListModal from "../lib/components/BlocklistModal.svelte";
+  import BlackListModal from "../lib/components/BlocklistCpfModal.svelte";
+  import {
+    addCnpjToBlockList,
+    createeCnpj,
+    deleteCnpj,
+    InfosCnpj,
+    updateCnpj,
+  } from "$lib/functions/cnpj";
+  import type { ICnpj } from "$lib/types/cnpj";
+  import CpfRow from "$lib/components/CpfRow.svelte";
+  import CnpjRow from "$lib/components/CnpjRow.svelte";
+  import UpdateCpfModal from "$lib/components/UpdateCpfModal.svelte";
+  import UpdateCnpjModal from "$lib/components/UpdateCnpjModal.svelte";
+  import DeleteCpfModal from "$lib/components/DeleteCpfModal.svelte";
+  import DeleteCnpjModal from "$lib/components/DeleteCnpjModal.svelte";
+  import AddCfpToBlockListModal from "$lib/components/AddCfpToBlockListModal.svelte";
+  import AddCnpjToBlockListModal from "$lib/components/AddCnpjToBlockListModal.svelte";
+  import BlocklistCnpjModal from "$lib/components/BlocklistCnpjModal.svelte";
+  import CreateCpfModal from "$lib/components/CreateCpfModal.svelte";
+  import CreateCnpjModal from "$lib/components/CreateCnpjModal.svelte";
+  import ValidateCpfModal from "$lib/components/ValidateCpfModal.svelte";
+  import ValidateCnpjModal from "$lib/components/ValidateCnpjModal.svelte";
 
   // Variáveis de estado
   let validationMessage = "";
@@ -19,19 +40,27 @@
   let showCreationModal = false;
   let showUpdateModal = false;
   let showDeleteModal = false;
-  let newCpfCnpj: ICpf = {
+  let newCpf: ICpf = {
     name: "",
     city: "",
     state: "",
     type: "CPF",
     cpfNumber: "",
   };
-  let validateCpfCnjpj = "";
+  let newCnpj: ICnpj = {
+    name: "",
+    city: "",
+    state: "",
+    type: "CNPJ",
+    cnpjNumber: "",
+  };
+  let validateCpf = "";
+  let validateCnpj = "";
   let currentType = "CPF";
-  let data: ICpf[] = [];
+  let cpfData: ICpf[] = [];
+  let cnpjData: ICnpj[] = [];
   let filterState = "";
   let filterCity = "";
-  let blocklist = [];
   let sortBy = "";
   let selectedItem: ICpf = {
     name: "",
@@ -40,26 +69,50 @@
     type: "CPF",
     cpfNumber: "",
   };
+  let selectedCnpjItem: ICnpj = {
+    name: "",
+    city: "",
+    state: "",
+    type: "CNPJ",
+    cnpjNumber: "",
+  };
   let showAddBlockListModal = false;
   let showBlockListModal = false;
-  $: filteredData();
+  $: filteredCpfData();
+  $: filteredCnpjData();
 
   onMount(async () => {
-    const loadedData = await InfosCpf(); // Carrega os dados
-    data = [...loadedData]; // Cria uma nova referência, forçando a reatividade
-    console.log("Dados carregados:", data);
+    // Carrega os dados de CPF e CNPJ
+    const loadedCpfData = await InfosCpf();
+    cpfData = [...loadedCpfData];
+    console.log("Dados de CPF carregados:", cpfData);
+
+    const loadedCnpjData = await InfosCnpj();
+    cnpjData = [...loadedCnpjData];
+    console.log("Dados de CNPJ carregados:", cnpjData);
   });
 
   async function handleCreateCpf() {
-    const isCreated = await createeCpf(newCpfCnpj);
+    const isCreated = await createeCpf(newCpf);
     if (isCreated) {
-      console.log("CPF criado com sucesso!");
-      showCreationModal = false; // Fecha o modal após o sucesso
-      data = await InfosCpf(); // Atualiza os dados após criar
+      console.log("Cadastro realizado com sucesso!");
+      showCreationModal = false;
+      cpfData = await InfosCpf();
     } else {
-      console.error("Falha ao criar o CPF.");
+      console.error("Falha ao criar cadastro.");
     }
   }
+  async function handleCreateCnpj() {
+    const isCreated = await createeCnpj(newCnpj);
+    if (isCreated) {
+      console.log("Cadastro realizado com sucesso!");
+      showCreationModal = false;
+      cnpjData = await InfosCnpj();
+    } else {
+      console.error("Falha ao criar cadastro.");
+    }
+  }
+
   async function handleUpdateCpf() {
     if (!selectedItem || !selectedItem.cpfNumber) {
       console.error("Nenhum item selecionado para atualizar.");
@@ -68,62 +121,125 @@
 
     const isUpdated = await updateCpf(selectedItem.cpfNumber, selectedItem);
     if (isUpdated) {
-      console.log("CPF atualizado com sucesso!");
-      showUpdateModal = false; // Fecha o modal após o sucesso
+      console.log("Atualização realizada com sucesso!");
+      showUpdateModal = false;
     } else {
-      console.error("Falha ao atualizar o CPF.");
+      console.error("Falha ao atualizar o cadastro.");
     }
   }
+  async function handleUpdateCnpj() {
+    if (!selectedCnpjItem || !selectedCnpjItem.cnpjNumber) {
+      console.error("Nenhum CNPJ selecionado para atualizar.");
+      return;
+    }
+
+    const isUpdated = await updateCnpj(
+      selectedCnpjItem.cnpjNumber,
+      selectedCnpjItem
+    );
+    if (isUpdated) {
+      console.log("Atualização de CNPJ realizada com sucesso!");
+      showUpdateModal = false;
+    } else {
+      console.error("Falha ao atualizar o cadastro do CNPJ.");
+    }
+  }
+
   async function handleDeleteCpf() {
     if (!selectedItem || !selectedItem.cpfNumber) {
-      console.error("Nenhum item selecionado para Deletar.");
+      console.error("Nenhum item selecionado para excluir.");
       return;
     }
 
-    const isDeleteed = await deleteCpf(selectedItem.cpfNumber);
-    if (isDeleteed) {
-      console.log("CPF atualizado com sucesso!");
-      showUpdateModal = false; // Fecha o modal após o sucesso
+    const isDeleted = await deleteCpf(selectedItem.cpfNumber);
+    if (isDeleted) {
+      console.log("Exclusão realizada com sucesso!");
+      showUpdateModal = false;
     } else {
-      console.error("Falha ao atualizar o CPF.");
+      console.error("Falha ao excluir o cadastro.");
     }
   }
+  async function handleDeleteCnpj() {
+    if (!selectedCnpjItem || !selectedCnpjItem.cnpjNumber) {
+      console.error("Nenhum item selecionado para excluir.");
+      return;
+    }
+
+    const isDeleted = await deleteCnpj(selectedCnpjItem.cnpjNumber);
+    if (isDeleted) {
+      console.log("Exclusão realizada com sucesso!");
+      showUpdateModal = false;
+    } else {
+      console.error("Falha ao excluir o cadastro.");
+    }
+  }
+
   async function handleAddCpfToBlockList() {
     if (!selectedItem || !selectedItem.cpfNumber) {
-      console.error("Nenhum item selecionado para Deletar.");
+      console.error(
+        "Nenhum item selecionado para adicionar à lista de bloqueio."
+      );
       return;
     }
 
-    const isAddToBlockList = await addCpfToBlockList(selectedItem.cpfNumber);
-    if (isAddToBlockList) {
-      console.log("CPF atualizado com sucesso!");
-      showUpdateModal = false; // Fecha o modal após o sucesso
+    const isAdded = await addCpfToBlockList(selectedItem.cpfNumber);
+    if (isAdded) {
+      console.log("CPF adicionado à lista de bloqueio com sucesso!");
+      showAddBlockListModal = false;
     } else {
-      console.error("Falha ao atualizar o CPF.");
+      console.error("Falha ao adicionar CPF à lista de bloqueio.");
+    }
+  }
+  async function handleAddCnpjToBlockList() {
+    if (!selectedCnpjItem || !selectedCnpjItem.cnpjNumber) {
+      console.error(
+        "Nenhum item selecionado para adicionar à lista de bloqueio."
+      );
+      return;
+    }
+
+    const isAdded = await addCnpjToBlockList(selectedCnpjItem.cnpjNumber);
+    if (isAdded) {
+      console.log("CPF adicionado à lista de bloqueio com sucesso!");
+      showAddBlockListModal = false;
+    } else {
+      console.error("Falha ao adicionar CPF à lista de bloqueio.");
     }
   }
 
-  function filteredData() {
-    let filtered = [...data]; // Cria uma cópia dos dados para filtrar
-
-    // Aplicando o filtro por estado e cidade, se definidos
+  function filteredCpfData() {
+    let filtered = [...cpfData];
     if (filterState) {
       filtered = filtered.filter(
         (item) => item.state.trim() === filterState.trim()
       );
     }
-
     if (filterCity) {
       filtered = filtered.filter(
         (item) => item.city.trim() === filterCity.trim()
       );
     }
-
-    // Ordenação por 'sortBy'
     if (sortBy && sortBy !== "") {
       filtered.sort((a, b) => (a[sortBy] > b[sortBy] ? 1 : -1));
     }
+    return filtered;
+  }
 
+  function filteredCnpjData() {
+    let filtered = [...cnpjData];
+    if (filterState) {
+      filtered = filtered.filter(
+        (item) => item.state.trim() === filterState.trim()
+      );
+    }
+    if (filterCity) {
+      filtered = filtered.filter(
+        (item) => item.city.trim() === filterCity.trim()
+      );
+    }
+    if (sortBy && sortBy !== "") {
+      filtered.sort((a, b) => (a[sortBy] > b[sortBy] ? 1 : -1));
+    }
     return filtered;
   }
 
@@ -132,34 +248,62 @@
     selectedItem = { ...item };
     showUpdateModal = true;
   }
+
+  function openUpdateCnpjModal(item: ICnpj) {
+    selectedCnpjItem = { ...item };
+    showUpdateModal = true;
+  }
+
+  function openAddBlockListModal(item: ICpf) {
+    selectedItem = { ...item };
+    showAddBlockListModal = true;
+  }
+
+  function openAddCnpjBlockListModal(item: ICpf) {
+    selectedItem = { ...item };
+    showAddBlockListModal = true;
+  }
+
   function openDeleteModal(item: ICpf) {
     selectedItem = { ...item };
     showDeleteModal = true;
   }
-  function openaddBlockListModal(item: ICpf) {
-    selectedItem = { ...item };
-    showAddBlockListModal = true;
+
+  function openDeleteCnpjModal(item: ICnpj) {
+    selectedCnpjItem = { ...item };
+    showDeleteModal = true;
   }
+
   function closeUpdateModal() {
     selectedItem = null;
     showUpdateModal = false;
   }
+
   function closeDeleteModal() {
     selectedItem = null;
     showDeleteModal = false;
   }
+
   function closeAddBlockListModal() {
     selectedItem = null;
     showAddBlockListModal = false;
   }
+
   function closeBlockListModal() {
     showBlockListModal = false;
   }
 
-  // Validação
   async function validateInput() {
     const validationResponse: IValidate = await validateCpforCnpj(
-      validateCpfCnjpj,
+      validateCpf,
+      currentType
+    );
+    validationMessage = validationResponse.validationMessage;
+    validationColor = validationResponse.validateColor;
+  }
+  async function validateInputCnpj() {
+    const validationResponse: IValidate = await validateCpforCnpj(
+      validateCnpj,
       currentType
     );
     validationMessage = validationResponse.validationMessage;
@@ -182,7 +326,7 @@
 
   function closeCreationModal() {
     showCreationModal = false;
-    validateCpfCnjpj = "";
+    validateCpf = "";
   }
 
   function openBlockListModal() {
@@ -211,130 +355,138 @@
       Switch to {currentType === "CPF" ? "CNPJ" : "CPF"}
     </button>
     <button on:click={openBlockListModal}>
-      Show {currentType === "CPF" ? "CNPJ" : "CPF"} BlockList
+      Show {currentType} BlockList
     </button>
   </div>
 
-  {#if data.length > 0}
+  {#if (currentType == "CPF" && cpfData.length > 0) || (currentType == "CNPJ" && cnpjData.length > 0)}
     <div class="table">
-      <div class="row header-row">
-        <div class="cell">Name</div>
-        <div class="cell">CPF/CNPJ</div>
-        <div class="cell">City</div>
-        <div class="cell">State</div>
-        <div class="cell">Actions</div>
-      </div>
-
-      {#each filteredData() as item}
-        <div class="row">
-          <div class="cell">{item.name}</div>
-          <div class="cell">{item.cpfNumber}</div>
-          <div class="cell">{item.city}</div>
-          <div class="cell">{item.state}</div>
-          <div class="cell">
-            <button on:click={() => openUpdateModal(item)}>Update</button>
-            <button on:click={() => openDeleteModal(item)}>Delete</button>
-            <button on:click={() => openaddBlockListModal(item)}
-              >AddBlockList</button
-            >
-          </div>
-        </div>
-      {/each}
+      {#if currentType === "CPF"}
+        <CpfRow
+          {cpfData}
+          {openUpdateModal}
+          {openDeleteModal}
+          {openAddBlockListModal}
+        ></CpfRow>
+      {/if}
+      {#if currentType === "CNPJ"}
+        <CnpjRow
+          {cnpjData}
+          {openUpdateCnpjModal}
+          {openDeleteCnpjModal}
+          {openAddCnpjBlockListModal}
+        ></CnpjRow>
+      {/if}
     </div>
   {:else}
     <p>Loading data...</p>
   {/if}
 
   {#if showCreationModal}
-    <div class="modal">
-      <div class="modal-content">
-        <h3>Register CPF/CNPJ</h3>
-        <input type="text" placeholder="Name" bind:value={newCpfCnpj.name} />
-        <input
-          type="text"
-          placeholder="CPF/CNPJ"
-          bind:value={newCpfCnpj.cpfNumber}
-        />
-        <input type="text" placeholder="City" bind:value={newCpfCnpj.city} />
-        <input type="text" placeholder="State" bind:value={newCpfCnpj.state} />
-        <button on:click={handleCreateCpf}>Create</button>
-        <button on:click={() => closeCreationModal}>Close</button>
-      </div>
-    </div>
+    {#if currentType === "CPF"}
+      <CreateCpfModal
+        show={showCreationModal}
+        {newCpf}
+        {handleCreateCpf}
+        closeModal={closeCreationModal}
+      />
+    {/if}
+    {#if currentType === "CNPJ"}
+      <CreateCnpjModal
+        show={showCreationModal}
+        {newCnpj}
+        {handleCreateCnpj}
+        closeModal={closeCreationModal}
+      />
+    {/if}
   {/if}
 
   {#if showValidationModal}
-    <div class="modal">
-      <div class="modal-content">
-        <h3>Validate CPF/CNPJ</h3>
-        <input
-          type="text"
-          placeholder="Enter CPF"
-          bind:value={validateCpfCnjpj}
-        />
-        <button on:click={validateInput}>Validate</button>
-        {#if validationMessage}
-          <div class="validation-message {validationColor}">
-            {validationMessage}
-          </div>
-        {/if}
-        <button on:click={closeValidationModal}>Close</button>
-      </div>
-    </div>
+    {#if currentType === "CPF"}
+      <ValidateCpfModal
+        bind:showValidationModal
+        bind:validateCpf
+        bind:validationMessage
+        bind:validationColor
+        {validateInput}
+        {closeValidationModal}
+      />
+    {/if}
+    {#if currentType === "CNPJ"}
+      <ValidateCnpjModal
+      bind:showValidationModal
+      bind:validateCnpj
+      bind:validationMessage
+      bind:validationColor
+      {validateInputCnpj}
+      {closeValidationModal}
+      />
+    {/if}
   {/if}
 
   {#if showUpdateModal}
-    <div class="modal">
-      <div class="modal-content">
-        <h3>Update Item</h3>
-        <input type="text" placeholder="Name" bind:value={selectedItem.name} />
-        <input
-          type="text"
-          placeholder="CPF/CNPJ"
-          bind:value={selectedItem.cpfNumber}
-        />
-        <input
-          type="text"
-          placeholder="State"
-          bind:value={selectedItem.state}
-        />
-        <input type="text" placeholder="City" bind:value={selectedItem.city} />
-        <button on:click={handleUpdateCpf}>Update</button>
-        <button on:click={closeUpdateModal}>Close</button>
-      </div>
-    </div>
+    {#if currentType === "CPF"}
+      <UpdateCpfModal
+        {selectedItem}
+        closeModal={closeUpdateModal}
+        {handleUpdateCpf}
+      />
+    {/if}
+    {#if currentType === "CNPJ"}
+      <UpdateCnpjModal
+        {selectedCnpjItem}
+        closeModal={closeUpdateModal}
+        {handleUpdateCnpj}
+      />
+    {/if}
   {/if}
+
   {#if showDeleteModal}
-    <div class="modal">
-      <div class="modal-content">
-        <h3>Delete Item</h3>
-        <input
-          type="text"
-          placeholder="CPF/CNPJ"
-          bind:value={selectedItem.cpfNumber}
-        />
-        <button on:click={handleDeleteCpf}>Delete</button>
-        <button on:click={closeDeleteModal}>Close</button>
-      </div>
-    </div>
+    {#if currentType === "CPF"}
+      <DeleteCpfModal
+        title="Delete Item"
+        message="Are you sure you want to delete this item?"
+        onConfirm={handleDeleteCpf}
+        onCancel={closeDeleteModal}
+      />
+    {/if}
+    {#if currentType === "CNPJ"}
+      <DeleteCnpjModal
+        title="Delete Item"
+        message="Are you sure you want to delete this item?"
+        onConfirm={handleDeleteCnpj}
+        onCancel={closeDeleteModal}
+      />
+    {/if}
   {/if}
+
   {#if showAddBlockListModal}
-    <div class="modal">
-      <div class="modal-content">
-        <h3>Add Block List Item</h3>
-        <input
-          type="text"
-          placeholder="CPF/CNPJ"
-          bind:value={selectedItem.cpfNumber}
-        />
-        <button on:click={handleAddCpfToBlockList}>Add</button>
-        <button on:click={closeAddBlockListModal}>Close</button>
-      </div>
-    </div>
+    {#if currentType === "CPF"}
+      <AddCfpToBlockListModal
+        show={showAddBlockListModal}
+        {selectedItem}
+        {handleAddCpfToBlockList}
+        closeModal={closeAddBlockListModal}
+      />
+    {/if}
+    {#if currentType === "CNPJ"}
+      <AddCnpjToBlockListModal
+        show={showAddBlockListModal}
+        {selectedCnpjItem}
+        {handleAddCnpjToBlockList}
+        closeModal={closeAddBlockListModal}
+      />
+    {/if}
   {/if}
+
   {#if showBlockListModal}
     <div class="modal-blocklist">
-      <BlackListModal></BlackListModal>
+      {#if currentType === "CPF"}
+        <BlackListModal />
+      {/if}
+      {#if currentType === "CNPJ"}
+        <BlocklistCnpjModal />
+      {/if}
       <div class="modal-blocklist-butom">
         <button on:click={closeBlockListModal}>Close</button>
       </div>
@@ -350,10 +502,16 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(192, 192, 192, 0.5);
     display: flex;
     justify-content: center;
     align-items: center;
+  }
+  .modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 400px;
   }
   .modal-blocklist {
     position: fixed;
@@ -367,7 +525,7 @@
     align-items: center;
     justify-content: center;
   }
-  .modal-blocklist-butom{
+  .modal-blocklist-butom {
     margin-top: 10px;
     width: 50%;
     height: 50px;
@@ -445,7 +603,8 @@
   }
   button {
     border-radius: 5px;
-    background-color: #f0dda4;
+    background-color: #86680c;
+    color: #f5f5f5;
     border: none;
     height: 35px;
   }

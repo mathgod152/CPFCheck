@@ -158,7 +158,7 @@ func generateCnpj(f *fuzz.Fuzzer) *dto.CnpjDTO {
         newNumber := rand.Intn(9) 
         cnpjNumber = append(cnpjNumber, newNumber)
     }
-	fmt.Println("Cnpj GENERATE: ", string(convertIntArrayToString(cnpjNumber)))
+	fmt.Println("Cnpj GENERATE: ", string(convertCNPJIntArrayToString(cnpjNumber)))
     newCnpj.CnpjNumber = string(convertIntArrayToString(cnpjNumber))
     return newCnpj
 }

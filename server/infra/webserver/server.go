@@ -33,6 +33,8 @@ func (s *Server) Start(port string) error {
 		RequestCounter: s.RequestCounter,
 		CpfValidator:   s.CpfValidator,
 		Cpf:            s.Cpf,
+		CnpjValidator:  s.CnpjValidator,
+		Cnpj:           s.Cnpj,
 	}
 
 	app := fiber.New()
@@ -67,6 +69,9 @@ func (s *Server) Start(port string) error {
 	router.Get("/cnpj/:cnpj", apiRouter.GetCnpjHandler)
 	router.Put("/cnpj/:cnpj", apiRouter.UpdateCnpjHandler)
 	router.Delete("/cnpj/:cnpj", apiRouter.DeleteCnpjHandler)
+	router.Put("/addblocklistcnpj/:cnpj", apiRouter.AddToBlockListCnpjHandler)
+	router.Get("/blocklistcnpjs", apiRouter.GetBlocklistCnpjsHandler)
+	router.Put("/removeblocklistcnpj/:cnpj", apiRouter.RemoveToBlockListCnpjHandler)
 
 	// Servidor
 	router.Get("/server-info", apiRouter.ServerInfoHandler)
