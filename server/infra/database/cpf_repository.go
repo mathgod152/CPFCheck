@@ -160,3 +160,66 @@ func (c *CpfRepository) Delete(cpf string) (bool, error) {
 }
 
 
+func (c *CpfRepository) AddCpftoBlockList(cpf string) (bool, error) {
+	stmt, err := c.Db.Prepare("UPDATE cpf SET block_list = 1 WHERE cpf_number = $1")
+	if err != nil {
+		return false, err
+	}
+	result, err := stmt.Exec(cpf)
+	if err != nil {
+		return false, err
+	}
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return false, err
+	}
+	if rowsAffected == 0 {
+		return false, errors.New("nenhum registro encontrado para adicionar a Block List")
+	}
+	return true, nil
+}
+
+func (c *CpfRepository) GetCpfBlockList() ([]entity.CpfEntity, error) {
+	rows, err := c.Db.Query("SELECT id, name, city, state, cpf_number FROM cpf WHERE block_list > 0")
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	cpfs := []entity.CpfEntity{}
+	for rows.Next() {
+		var id int
+		var name, city, state, cpf_number string
+
+		if err := rows.Scan(&id, &name, &city, &state, &cpf_number); err != nil {
+			return nil, err
+		}
+		application := entity.CpfEntity{
+			Id:        id,
+			Name:      name,
+			State:     state,
+			City:      city,
+			CpfNumber: cpf_number,
+		}
+		cpfs = append(cpfs, application)
+	}
+	return cpfs, nil
+}
+
+func (c *CpfRepository) RemoveCpfFromBlockList(cpf string)(bool, error) {
+	stmt, err := c.Db.Prepare("UPDATE cpf SET block_list = 0 WHERE cpf_number = $1")
+	if err != nil {
+		return false, err
+	}
+	result, err := stmt.Exec(cpf)
+	if err != nil {
+		return false, err
+	}
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return false, err
+	}
+	if rowsAffected == 0 {
+		return false, errors.New("nenhum registro encontrado para adicionar a Block List")
+	}
+	return true, nil
+}

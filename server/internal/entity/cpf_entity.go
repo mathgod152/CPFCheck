@@ -19,4 +19,7 @@ type CpfInterface interface {
 	GetCpf(cpf string) (CpfEntity, error)
 	Update(cpfData *CpfEntity, cpf string) (CpfEntity, error)
 	Delete(cpf string) (bool, error)
+	AddCpftoBlockList(cpf string) (bool, error)
+	GetCpfBlockList()([]CpfEntity, error)
+	RemoveCpfFromBlockList(cpf string) (bool, error)
 }

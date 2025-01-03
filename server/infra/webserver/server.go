@@ -56,6 +56,9 @@ func (s *Server) Start(port string) error {
 	router.Get("/cpf/:cpf", apiRouter.GetCpfHandler)
 	router.Put("/cpf/:cpf", apiRouter.UpdateCpfHandler)
 	router.Delete("/cpf/:cpf", apiRouter.DeleteCpfHandler)
+	router.Put("/addblocklistcpf/:cpf", apiRouter.AddToBlockListCpfHandler)
+	router.Get("/blocklistcpfs", apiRouter.GetBlocklistCpfsHandler)
+	router.Put("/removeblocklistcpf/:cpf", apiRouter.RemoveToBlockListCpfHandler)
 
 	// CNPJ
 	router.Post("/cnpjValidator", apiRouter.ValidateCnpjHandler)

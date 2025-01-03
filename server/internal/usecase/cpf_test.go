@@ -127,6 +127,26 @@ func TestDeleteCpf(t *testing.T) {
 	}
 }
 
+func TestAddToBlockListCpf(t *testing.T) {
+	cpfUseCase := &usecase.CpfUsecase{
+		CpfInterface: CpfImplementation,
+	}
+
+	f := fuzz.New()
+	newCpf := generateCpf(f)
+	_, err := cpfUseCase.NewCpf(*newCpf) //Garante que um CPF vai existir
+
+	testId := newCpf.CpfNumber  
+	response, err := cpfUseCase.AddCpfToBlockList(testId)
+
+	if err != nil {
+		assert.Equal(t, errors.New("CPF not found"), err)
+	} else {
+		assert.Equal(t, response, true)
+		assert.NoError(t, err)
+	}
+}
+
 func generateCpf(f *fuzz.Fuzzer) *dto.CpfDTO {
     newCpf := &dto.CpfDTO{}
     f.Fuzz(&newCpf.Name)

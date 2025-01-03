@@ -20,6 +20,7 @@ CREATE TABLE cpf (
     city VARCHAR(255),
     state VARCHAR(255),
     cpf_number VARCHAR(20) NOT NULL,
+    block_list INT,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
@@ -30,6 +31,7 @@ CREATE TABLE cnpj (
     city VARCHAR(255),
     state VARCHAR(255),
     cnpj_number VARCHAR(255),
+    block_list INT,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );

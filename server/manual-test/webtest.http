@@ -17,10 +17,10 @@ POST http://localhost:5000/api/v1/savecpf HTTP/1.1
 Content-Type: application/json
 
 {
-  "name": "Eliel Lemos",
+  "name": "Matheus Lemos",
   "city":"Curitiba",
   "state":"PR",
-  "cpfNumber": "253.325.658.79"
+  "cpfNumber": "503.278.618-78"
 }
 
 ###
@@ -41,6 +41,21 @@ Content-Type: application/json
   "city": "Registro",
   "state": "São Paulo"
 }
+
+###
+
+PUT http://localhost:5000/api/v1/addblocklistcpf/503.278.618-78 HTTP/1.1
+Content-Type: application/json
+
+###
+
+PUT http://localhost:5000/api/v1/removeblocklistcpf/684.451.111-55 HTTP/1.1
+Content-Type: application/json
+
+###
+
+Get http://localhost:5000/api/v1/blocklistcpfs HTTP/1.1
+Content-Type: application/json
 
 ###
 

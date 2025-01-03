@@ -89,3 +89,40 @@ func (c *CnpjUsecase) DeleteCnpj(cnpj string) (bool, error) {
 	}
 	return deletedEntity, nil
 }
+
+func (c *CnpjUsecase) AddCnpjToBlockList(cnpj string) (bool, error) {
+	addToBlockList, err := c.CnpjInterface.AddCnpjToBlockList(cnpj)
+	if err != nil {
+		return addToBlockList, err
+	}
+	return addToBlockList, nil
+}
+
+func (c *CnpjUsecase) RemoveCnpjFromBlockList(cnpj string) (bool, error) {
+	addCnpjToBlockList, err := c.CnpjInterface.RemoveCnpjFromBlockList(cnpj)
+	if err != nil {
+		return addCnpjToBlockList, err
+	}
+	return addCnpjToBlockList, nil
+}
+
+func (c *CnpjUsecase) SelectBlockListCnpjs() ([]dto.CnpjDTO, error) {
+	entities, err := c.CnpjInterface.GetCnpjBlockList()
+	if err != nil {
+		return nil, errors.New("Erro ao Receber os Dados" + fmt.Sprint(err))
+	}
+	var dtos []dto.CnpjDTO
+	if len(entities) == 0 {
+		return nil, nil
+	}
+	for _, entity := range entities {
+		dtos = append(dtos, dto.CnpjDTO{
+			Name:      entity.Name,
+			City:      entity.City,
+			State:     entity.State,
+			CnpjNumber: entity.CnpjNumber,
+		})
+	}
+	return dtos, nil
+}
+

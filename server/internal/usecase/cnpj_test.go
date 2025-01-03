@@ -127,6 +127,26 @@ func TestDeleteCnpj(t *testing.T) {
 	}
 }
 
+func TestAddToBlockList(t *testing.T) {
+	cnpjUseCase := &usecase.CnpjUsecase{
+		CnpjInterface: CnpjImplementation,
+	}
+
+	f := fuzz.New()
+	newCnpj := generateCnpj(f)
+	_, err := cnpjUseCase.NewCnpj(*newCnpj) //Garante que um Cnpj vai existir
+
+	testId := newCnpj.CnpjNumber  
+	response, err := cnpjUseCase.AddCnpjToBlockList(testId)
+
+	if err != nil {
+		assert.Equal(t, errors.New("Cnpj not found"), err)
+	} else {
+		assert.Equal(t, response, true)
+		assert.NoError(t, err)
+	}
+}
+
 func generateCnpj(f *fuzz.Fuzzer) *dto.CnpjDTO {
     newCnpj := &dto.CnpjDTO{}
     f.Fuzz(&newCnpj.Name)

@@ -159,4 +159,66 @@ func (c *CnpjRepository) Delete(cnpj string) (bool, error) {
 	return true, nil
 }
 
+func (c *CnpjRepository) AddCnpjToBlockList(cnpj string)(bool, error) {
+	stmt, err := c.Db.Prepare("UPDATE cnpj SET block_list = 1 WHERE cnpj_number = $1")
+	if err != nil {
+		return false, err
+	}
+	result, err := stmt.Exec(cnpj)
+	if err != nil {
+		return false, err
+	}
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return false, err
+	}
+	if rowsAffected == 0 {
+		return false, errors.New("nenhum registro encontrado para adicionar a Block List")
+	}
+	return true, nil
+}
 
+func (c *CnpjRepository) GetCnpjBlockList() ([]entity.CnpjEntity, error) {
+	rows, err := c.Db.Query("SELECT id, name, city, state, cnpj_number FROM cnpj WHERE block_list > 0")
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	cnpjs := []entity.CnpjEntity{}
+	for rows.Next() {
+		var id int
+		var name, city, state, cnpj_number string
+
+		if err := rows.Scan(&id, &name, &city, &state, &cnpj_number); err != nil {
+			return nil, err
+		}
+		application := entity.CnpjEntity{
+			Id:        id,
+			Name:      name,
+			State:     state,
+			City:      city,
+			CnpjNumber: cnpj_number,
+		}
+		cnpjs = append(cnpjs, application)
+	}
+	return cnpjs, nil
+}
+
+func (c *CnpjRepository) RemoveCnpjFromBlockList(cnpj string)(bool, error) {
+	stmt, err := c.Db.Prepare("UPDATE cnpj SET block_list = 0 WHERE cnpj_number = $1")
+	if err != nil {
+		return false, err
+	}
+	result, err := stmt.Exec(cnpj)
+	if err != nil {
+		return false, err
+	}
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return false, err
+	}
+	if rowsAffected == 0 {
+		return false, errors.New("nenhum registro encontrado para adicionar a Block List")
+	}
+	return true, nil
+}

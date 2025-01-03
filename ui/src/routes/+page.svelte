@@ -3,12 +3,14 @@
   import { validateCpforCnpj } from "$lib/functions/validation";
   import type { IValidate } from "$lib/types/validateResponse";
   import {
+    addCpfToBlockList,
     createeCpf,
     deleteCpf,
     InfosCpf,
     updateCpf,
   } from "$lib/functions/cpf";
   import type { ICpf } from "$lib/types/cpf";
+  import BlackListModal from "../lib/components/BlocklistModal.svelte";
 
   // Variáveis de estado
   let validationMessage = "";
@@ -38,7 +40,8 @@
     type: "CPF",
     cpfNumber: "",
   };
-  let groupedCpf = false;
+  let showAddBlockListModal = false;
+  let showBlockListModal = false;
   $: filteredData();
 
   onMount(async () => {
@@ -85,6 +88,20 @@
       console.error("Falha ao atualizar o CPF.");
     }
   }
+  async function handleAddCpfToBlockList() {
+    if (!selectedItem || !selectedItem.cpfNumber) {
+      console.error("Nenhum item selecionado para Deletar.");
+      return;
+    }
+
+    const isAddToBlockList = await addCpfToBlockList(selectedItem.cpfNumber);
+    if (isAddToBlockList) {
+      console.log("CPF atualizado com sucesso!");
+      showUpdateModal = false; // Fecha o modal após o sucesso
+    } else {
+      console.error("Falha ao atualizar o CPF.");
+    }
+  }
 
   function filteredData() {
     let filtered = [...data]; // Cria uma cópia dos dados para filtrar
@@ -119,7 +136,10 @@
     selectedItem = { ...item };
     showDeleteModal = true;
   }
-
+  function openaddBlockListModal(item: ICpf) {
+    selectedItem = { ...item };
+    showAddBlockListModal = true;
+  }
   function closeUpdateModal() {
     selectedItem = null;
     showUpdateModal = false;
@@ -128,22 +148,13 @@
     selectedItem = null;
     showDeleteModal = false;
   }
-
-  function toggleGroupByCpf() {
-    groupedCpf = !groupedCpf;
+  function closeAddBlockListModal() {
+    selectedItem = null;
+    showAddBlockListModal = false;
   }
-
-  $: groupedData = groupedCpf
-    ? Object.values(
-        data.reduce((acc, item) => {
-          if (!acc[item.cpfNumber]) {
-            acc[item.cpfNumber] = { ...item, count: 0 };
-          }
-          acc[item.cpfNumber].count++;
-          return acc;
-        }, {})
-      )
-    : data;
+  function closeBlockListModal() {
+    showBlockListModal = false;
+  }
 
   // Validação
   async function validateInput() {
@@ -173,6 +184,10 @@
     showCreationModal = false;
     validateCpfCnjpj = "";
   }
+
+  function openBlockListModal() {
+    showBlockListModal = true;
+  }
 </script>
 
 <div class="container">
@@ -195,6 +210,9 @@
     >
       Switch to {currentType === "CPF" ? "CNPJ" : "CPF"}
     </button>
+    <button on:click={openBlockListModal}>
+      Show {currentType === "CPF" ? "CNPJ" : "CPF"} BlockList
+    </button>
   </div>
 
   {#if data.length > 0}
@@ -216,6 +234,9 @@
           <div class="cell">
             <button on:click={() => openUpdateModal(item)}>Update</button>
             <button on:click={() => openDeleteModal(item)}>Delete</button>
+            <button on:click={() => openaddBlockListModal(item)}
+              >AddBlockList</button
+            >
           </div>
         </div>
       {/each}
@@ -237,7 +258,7 @@
         <input type="text" placeholder="City" bind:value={newCpfCnpj.city} />
         <input type="text" placeholder="State" bind:value={newCpfCnpj.state} />
         <button on:click={handleCreateCpf}>Create</button>
-        <button on:click={() => (showCreationModal = false)}>Close</button>
+        <button on:click={() => closeCreationModal}>Close</button>
       </div>
     </div>
   {/if}
@@ -297,6 +318,28 @@
       </div>
     </div>
   {/if}
+  {#if showAddBlockListModal}
+    <div class="modal">
+      <div class="modal-content">
+        <h3>Add Block List Item</h3>
+        <input
+          type="text"
+          placeholder="CPF/CNPJ"
+          bind:value={selectedItem.cpfNumber}
+        />
+        <button on:click={handleAddCpfToBlockList}>Add</button>
+        <button on:click={closeAddBlockListModal}>Close</button>
+      </div>
+    </div>
+  {/if}
+  {#if showBlockListModal}
+    <div class="modal-blocklist">
+      <BlackListModal></BlackListModal>
+      <div class="modal-blocklist-butom">
+        <button on:click={closeBlockListModal}>Close</button>
+      </div>
+    </div>
+  {/if}
 </div>
 
 <style>
@@ -312,11 +355,24 @@
     justify-content: center;
     align-items: center;
   }
-  .modal-content {
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    width: 400px;
+  .modal-blocklist {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .modal-blocklist-butom{
+    margin-top: 10px;
+    width: 50%;
+    height: 50px;
+    justify-content: center;
+    display: flex;
   }
   .container {
     max-width: 1200px;
@@ -386,5 +442,11 @@
   }
   .validation-message.red {
     color: red;
+  }
+  button {
+    border-radius: 5px;
+    background-color: #f0dda4;
+    border: none;
+    height: 35px;
   }
 </style>

@@ -89,3 +89,39 @@ func (c *CpfUsecase) DeleteCpf(cpf string) (bool, error) {
 	}
 	return deletedEntity, nil
 }
+
+func (c *CpfUsecase) AddCpfToBlockList(cpf string) (bool, error) {
+	addCpfToBlockList, err := c.CpfInterface.AddCpftoBlockList(cpf)
+	if err != nil {
+		return addCpfToBlockList, err
+	}
+	return addCpfToBlockList, nil
+}
+
+func (c *CpfUsecase) RemoveCpfFromBlockList(cpf string) (bool, error) {
+	addCpfToBlockList, err := c.CpfInterface.RemoveCpfFromBlockList(cpf)
+	if err != nil {
+		return addCpfToBlockList, err
+	}
+	return addCpfToBlockList, nil
+}
+
+func (c *CpfUsecase) SelectBlockListCpfs() ([]dto.CpfDTO, error) {
+	entities, err := c.CpfInterface.GetCpfBlockList()
+	if err != nil {
+		return nil, errors.New("Erro ao Receber os Dados" + fmt.Sprint(err))
+	}
+	var dtos []dto.CpfDTO
+	if len(entities) == 0 {
+		return nil, nil
+	}
+	for _, entity := range entities {
+		dtos = append(dtos, dto.CpfDTO{
+			Name:      entity.Name,
+			City:      entity.City,
+			State:     entity.State,
+			CpfNumber: entity.CpfNumber,
+		})
+	}
+	return dtos, nil
+}

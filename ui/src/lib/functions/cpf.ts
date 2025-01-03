@@ -103,6 +103,48 @@ export async function deleteCpf(cpfToDelete:string) {
     throw error;
   }
 }
+export async function addCpfToBlockList(cpfToAdd:string) {
+  try {
+    const response = await fetch(`http://localhost:5000/api/v1/addblocklistcpf/${cpfToAdd}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      }
+    });
+
+    const validate = await response.status;
+    if ((await response.status) != 200) {
+      console.log("ERROR",response.json)
+      return false;
+    }
+    location.reload();
+    return true;
+  } catch (error) {
+    console.error("Error retrieving Cpf:", error);
+    throw error;
+  }
+}
+export async function reemoveCpfToBlockList(cpfToReemovee:string) {
+  try {
+    const response = await fetch(`http://localhost:5000/api/v1/removeblocklistcpf/${cpfToReemovee}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      }
+    });
+
+    const validate = await response.status;
+    if ((await response.status) != 200) {
+      console.log("ERROR",response.json)
+      return false;
+    }
+    location.reload();
+    return true;
+  } catch (error) {
+    console.error("Error retrieving Cpf:", error);
+    throw error;
+  }
+}
 
 export async function InfosCpf(): Promise<ICpf[]> {
   try {
@@ -129,3 +171,30 @@ export async function InfosCpf(): Promise<ICpf[]> {
     throw error;
   }
 }
+
+export async function getBlockListCpfs(): Promise<ICpf[]> {
+  try {
+    const response = await fetch(`http://localhost:5000/api/v1/blocklistcpfs`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const json = await response.json();
+    const cpfReturn = json.response;
+
+    const cpfs: ICpf[] = cpfReturn.map((item: any) => ({
+      name: item.name,
+      city: item.city,
+      state: item.state,
+      cpfNumber: item.cpfNumber,
+    }));
+    console.log("CPFs: ", cpfs);
+    return cpfs;
+  } catch (error) {
+    console.error("Error retrieving Cpf:", error);
+    throw error;
+  }
+}
+

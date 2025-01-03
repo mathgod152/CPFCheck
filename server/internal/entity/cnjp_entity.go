@@ -19,4 +19,7 @@ type CnpjInterface interface {
 	GetCnpj(cnpj string) (CnpjEntity, error)
 	Update(cnpjData *CnpjEntity, cnpj string) (CnpjEntity, error)
 	Delete(cnpj string) (bool, error)
+	AddCnpjToBlockList(cnpj string)(bool, error)
+	GetCnpjBlockList()([]CnpjEntity, error)
+	RemoveCnpjFromBlockList(cnpj string) (bool, error)
 }

@@ -95,3 +95,50 @@ func (_r *Router) DeleteCpfHandler(c *fiber.Ctx) error {
 }
 
 
+func (_r *Router) AddToBlockListCpfHandler(c *fiber.Ctx) error {
+	cpfNumber := c.Params("cpf")
+	success, err := _r.Cpf.AddCpfToBlockList(cpfNumber)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"message": "Error deleting CPF" + fmt.Sprint(err),
+		})
+	}
+	if !success {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"message": "CPF not found",
+		})
+	}
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"message": "CPF Was added Black List",
+	})
+}
+
+func (_r *Router) GetBlocklistCpfsHandler(c *fiber.Ctx) error {
+	cpfs, err := _r.Cpf.SelectBlockListCpfs()
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"message": "Error retrieving CPFs" + fmt.Sprint(err),
+		})
+	}
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"response": cpfs,
+	})
+}
+
+func (_r *Router) RemoveToBlockListCpfHandler(c *fiber.Ctx) error {
+	cpfNumber := c.Params("cpf")
+	success, err := _r.Cpf.RemoveCpfFromBlockList(cpfNumber)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"message": "Error deleting CPF" + fmt.Sprint(err),
+		})
+	}
+	if !success {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"message": "CPF not found",
+		})
+	}
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"message": "CPF Was Reemove Black List",
+	})
+}
